@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Distorções Cognitivas — Guia de Consulta para Estagiários (TCC)</title>
+<title>Ferramentas de TCC — Guia de Estágio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -15,12 +15,9 @@
   --teal:#0F5F55;
   --teal-soft:#E3EEEC;
   --line:#D9E0DE;
-  --amparo:#A16207;   /* desamparo */
-  --amparo-bg:#FBF3E2;
-  --amor:#B0455F;     /* desamor */
-  --amor-bg:#FAEBEF;
-  --valor:#5A4FB0;    /* desvalor */
-  --valor-bg:#EEECF9;
+  --amparo:#A16207;
+  --amor:#B0455F;
+  --valor:#5A4FB0;
   --radius:14px;
   --shadow:0 1px 2px rgba(23,37,35,.06),0 8px 24px rgba(23,37,35,.07);
   --font-display:"Bricolage Grotesque",system-ui,sans-serif;
@@ -35,270 +32,96 @@ body{
   font-size:14px;
   line-height:1.5;
 }
-button{font-family:inherit;cursor:pointer}
 
-/* ======= LAYOUT ======= */
 .app{
-  max-width:1180px;
+  max-width:1080px;
   margin:0 auto;
-  padding:20px 24px 90px;
+  padding:48px 24px 90px;
   min-height:100vh;
   display:flex;
   flex-direction:column;
-  gap:16px;
+  gap:32px;
 }
 
-/* ======= HEADER + MODELO ======= */
 header.top{
-  display:flex;
-  gap:24px;
-  align-items:stretch;
-  flex-wrap:wrap;
+  display:flex;flex-direction:column;gap:8px;
+  max-width:62ch;
 }
-.title-block{flex:1 1 300px;min-width:280px;display:flex;flex-direction:column;justify-content:center;gap:8px}
 .eyebrow{
   font-size:11px;letter-spacing:.14em;text-transform:uppercase;
   color:var(--teal);font-weight:600;
 }
 h1{
   font-family:var(--font-display);
-  font-weight:700;font-size:clamp(24px,3vw,32px);
+  font-weight:700;font-size:clamp(26px,3.4vw,36px);
   line-height:1.12;letter-spacing:-.01em;
 }
-.subtitle{color:var(--ink-soft);font-size:13.5px;max-width:46ch}
-
-/* modelo cognitivo — assinatura visual: corte em camadas */
-.model{
-  flex:1 1 420px;min-width:320px;
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  box-shadow:var(--shadow);
-  padding:14px 16px;
-  display:flex;flex-direction:column;gap:8px;
-}
-.model-label{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
-.flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.flow .node{
-  border:1.5px solid var(--line);border-radius:8px;
-  padding:5px 10px;font-size:12px;font-weight:600;background:#fff;
-}
-.flow .node.hot{border-color:var(--teal);background:var(--teal-soft);color:var(--teal);position:relative}
-.flow .node.hot::after{
-  content:"as distorções operam aqui";
-  position:absolute;top:-14px;left:0;
-  font-size:9.5px;font-weight:600;color:var(--teal);
-  letter-spacing:.02em;white-space:nowrap;
-}
-.flow .arrow{color:var(--ink-soft);font-size:13px}
-.layers{display:flex;flex-direction:column;gap:5px;margin-top:4px}
-.layer{
-  display:flex;align-items:center;gap:10px;
-  border-left:3px solid var(--line);
-  padding:3px 0 3px 10px;
-  font-size:12px;color:var(--ink-soft);
-}
-.layer b{color:var(--ink);font-weight:600;font-size:12px}
-.layer .chips{display:flex;gap:6px;flex-wrap:wrap}
-.chip{
-  border:1.5px solid transparent;border-radius:99px;
-  font-size:11px;font-weight:600;padding:3px 10px;
-  background:#fff;transition:all .15s;
-}
-.chip.amparo{color:var(--amparo);border-color:var(--amparo);background:var(--amparo-bg)}
-.chip.amor{color:var(--amor);border-color:var(--amor);background:var(--amor-bg)}
-.chip.valor{color:var(--valor);border-color:var(--valor);background:var(--valor-bg)}
-.chip.off{opacity:.35;filter:grayscale(.5)}
-.chip:hover{transform:translateY(-1px)}
-
-/* ======= TOOLBAR ======= */
-.toolbar{
-  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
-}
-.search{
-  flex:1 1 220px;max-width:340px;position:relative;
-}
-.search input{
-  width:100%;padding:9px 12px 9px 34px;
-  border:1px solid var(--line);border-radius:10px;
-  font-family:inherit;font-size:13px;background:var(--card);
-  color:var(--ink);
-}
-.search input:focus{outline:2px solid var(--teal);outline-offset:1px;border-color:var(--teal)}
-.search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;stroke:var(--ink-soft)}
-.tb-actions{display:flex;gap:8px;margin-left:auto;flex-wrap:wrap}
-.btn{
-  border:1px solid var(--line);background:var(--card);
-  border-radius:10px;padding:8px 14px;font-size:12.5px;font-weight:600;
-  color:var(--ink);transition:all .15s;
-}
-.btn:hover{border-color:var(--teal);color:var(--teal)}
-.result-count{font-size:12px;color:var(--ink-soft)}
+.subtitle{color:var(--ink-soft);font-size:14px;max-width:56ch}
 
 /* ======= GRID ======= */
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(215px,1fr));
-  gap:10px;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:16px;
 }
-.card{
+.tool{
   background:var(--card);
   border:1px solid var(--line);
   border-radius:var(--radius);
-  padding:12px 12px 10px;
-  display:flex;flex-direction:column;gap:8px;
-  transition:all .15s;position:relative;
-  min-height:104px;
+  box-shadow:var(--shadow);
+  padding:20px 20px 18px;
+  display:flex;flex-direction:column;gap:12px;
+  min-height:200px;
+  transition:all .15s;
+  text-decoration:none;color:inherit;
+  position:relative;
 }
-.card:hover{box-shadow:var(--shadow);transform:translateY(-2px);border-color:#BFCBC8}
-.card.selected{border-color:var(--teal);background:linear-gradient(0deg,var(--teal-soft) 0%,#fff 55%)}
-.card-top{display:flex;align-items:flex-start;gap:8px}
-.card h3{
+a.tool:hover{transform:translateY(-3px);border-color:#BFCBC8}
+.tool .tag{
+  font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  font-weight:700;color:var(--teal);
+  display:flex;align-items:center;gap:6px;
+}
+.tool .tag .dot{width:6px;height:6px;border-radius:50%;background:var(--teal)}
+.tool h2{
   font-family:var(--font-display);font-weight:600;
-  font-size:14.5px;line-height:1.2;flex:1;cursor:pointer;
+  font-size:19px;line-height:1.2;
 }
-.card h3:hover{color:var(--teal)}
-.card .num{
-  font-size:10px;font-weight:700;color:var(--ink-soft);opacity:.55;
-  font-variant-numeric:tabular-nums;padding-top:2px;
-}
-.card .hint{font-size:11.5px;color:var(--ink-soft);line-height:1.35;flex:1;cursor:pointer}
-.card-foot{display:flex;align-items:center;justify-content:space-between;gap:6px}
-.dots{display:flex;gap:4px}
-.dot{width:9px;height:9px;border-radius:50%}
-.dot.amparo{background:var(--amparo)}
-.dot.amor{background:var(--amor)}
-.dot.valor{background:var(--valor)}
-.check{
+.tool p{font-size:12.5px;color:var(--ink-soft);line-height:1.5;flex:1}
+.tool .foot{
+  font-size:12px;font-weight:600;color:var(--teal);
   display:flex;align-items:center;gap:5px;
-  font-size:11px;font-weight:600;color:var(--ink-soft);
-  user-select:none;cursor:pointer;
 }
-.check input{accent-color:var(--teal);width:14px;height:14px;cursor:pointer}
-.empty{
-  grid-column:1/-1;text-align:center;color:var(--ink-soft);
-  padding:32px;font-size:13px;
+.tool .foot svg{width:13px;height:13px;stroke:var(--teal);transition:transform .15s}
+a.tool:hover .foot svg{transform:translateX(3px)}
+
+.tool.disabled{
+  background:transparent;box-shadow:none;
+  border:1.5px dashed var(--line);
+  cursor:default;
+}
+.tool.disabled .tag{color:var(--ink-soft)}
+.tool.disabled .tag .dot{background:var(--ink-soft);opacity:.5}
+.tool.disabled h2{color:var(--ink-soft)}
+.tool.disabled p{color:var(--ink-soft);opacity:.85}
+.badge-soon{
+  align-self:flex-start;
+  font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink-soft);background:var(--paper);
+  border:1px solid var(--line);border-radius:99px;
+  padding:3px 10px;
 }
 
-/* ======= FLOATING BAR ======= */
-.floatbar{
-  position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(90px);
-  background:var(--ink);color:#fff;
-  border-radius:99px;padding:9px 10px 9px 20px;
-  display:flex;align-items:center;gap:14px;
-  box-shadow:0 10px 30px rgba(23,37,35,.3);
-  transition:transform .25s cubic-bezier(.4,0,.2,1);
-  z-index:60;font-size:13px;
-}
-.floatbar.show{transform:translateX(-50%) translateY(0)}
-.floatbar .count b{font-variant-numeric:tabular-nums}
-.floatbar .pdf{
-  background:var(--teal);color:#fff;border:none;
-  border-radius:99px;padding:8px 16px;font-size:12.5px;font-weight:600;
-}
-.floatbar .pdf:hover{background:#0B7263}
-.floatbar .clear{
-  background:transparent;border:none;color:#B9C7C4;font-size:12px;
-  text-decoration:underline;
-}
-
-/* ======= DRAWER ======= */
-.overlay{
-  position:fixed;inset:0;background:rgba(23,37,35,.35);
-  opacity:0;pointer-events:none;transition:opacity .2s;z-index:70;
-}
-.overlay.show{opacity:1;pointer-events:auto}
-.drawer{
-  position:fixed;top:0;right:0;height:100%;width:min(440px,100%);
-  background:var(--card);z-index:80;
-  transform:translateX(105%);transition:transform .28s cubic-bezier(.4,0,.2,1);
-  box-shadow:-12px 0 40px rgba(23,37,35,.18);
-  display:flex;flex-direction:column;
-}
-.drawer.show{transform:translateX(0)}
-.drawer-head{
-  padding:20px 22px 14px;border-bottom:1px solid var(--line);
-  display:flex;align-items:flex-start;gap:12px;
-}
-.drawer-head h2{
-  font-family:var(--font-display);font-weight:700;font-size:21px;
-  line-height:1.15;flex:1;
-}
-.drawer-head .close{
-  border:1px solid var(--line);background:#fff;border-radius:8px;
-  width:30px;height:30px;font-size:15px;color:var(--ink-soft);flex-shrink:0;
-}
-.drawer-head .close:hover{color:var(--ink);border-color:var(--ink-soft)}
-.drawer-body{padding:18px 22px 26px;overflow-y:auto;display:flex;flex-direction:column;gap:16px}
-.field .f-label{
-  font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
-  font-weight:700;color:var(--teal);margin-bottom:4px;
-}
-.field p{font-size:13.5px;line-height:1.55}
-.field.exemplo p{
-  font-style:italic;background:var(--paper);
-  border-left:3px solid var(--teal);border-radius:0 8px 8px 0;
-  padding:10px 12px;
-}
-.field.regra p{
-  background:#FBF9F2;border:1px dashed #D8CFA8;border-radius:8px;
-  padding:10px 12px;font-weight:500;
-}
-.field.socratica p{
-  background:var(--teal-soft);border-radius:8px;padding:10px 12px;
-  color:#0B4A42;font-weight:500;
-}
-.badges{display:flex;gap:6px;flex-wrap:wrap}
-.badge{
-  border-radius:99px;font-size:11px;font-weight:600;padding:4px 11px;
-}
-.badge.amparo{color:var(--amparo);background:var(--amparo-bg)}
-.badge.amor{color:var(--amor);background:var(--amor-bg)}
-.badge.valor{color:var(--valor);background:var(--valor-bg)}
-.drawer-foot{
-  border-top:1px solid var(--line);padding:14px 22px;
-  display:flex;gap:10px;align-items:center;
-}
-.drawer-foot .btn.primary{background:var(--teal);color:#fff;border-color:var(--teal)}
-.drawer-foot .btn.primary:hover{background:#0B7263}
-.drawer-nav{margin-left:auto;display:flex;gap:6px}
-
-/* ======= PRINT SHEET ======= */
-#printSheet{display:none}
-@media print{
-  body{background:#fff}
-  .app,.drawer,.overlay,.floatbar{display:none !important}
-  #printSheet{display:block;font-family:var(--font-body);color:#172523}
-  .ps-cover{margin-bottom:22px;border-bottom:2.5px solid #0F5F55;padding-bottom:14px}
-  .ps-cover .ps-eyebrow{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#0F5F55;font-weight:700}
-  .ps-cover h1{font-family:var(--font-display);font-size:24px;margin:4px 0 6px}
-  .ps-cover p{font-size:11.5px;color:#4E605D;max-width:70ch}
-  .ps-model{
-    border:1px solid #D9E0DE;border-radius:10px;padding:12px 14px;margin-bottom:20px;
-    font-size:11px;color:#4E605D;
-  }
-  .ps-model b{color:#172523}
-  .ps-model .ps-flow{font-size:12px;font-weight:600;color:#172523;margin-bottom:6px}
-  .ps-item{
-    break-inside:avoid;border:1px solid #D9E0DE;border-radius:10px;
-    padding:14px 16px;margin-bottom:12px;
-  }
-  .ps-item h2{font-family:var(--font-display);font-size:16px;margin-bottom:2px}
-  .ps-domains{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#0F5F55;margin-bottom:8px}
-  .ps-row{margin-bottom:7px;font-size:11.5px;line-height:1.5}
-  .ps-row .ps-k{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:#0F5F55;display:block}
-  .ps-row.ex em{color:#172523}
-  .ps-footer{margin-top:14px;font-size:9.5px;color:#8A9995;text-align:center}
-  @page{margin:16mm}
+footer.note{
+  font-size:12px;color:var(--ink-soft);
+  border-top:1px solid var(--line);padding-top:16px;
 }
 
 @media (max-width:640px){
-  .app{padding:16px 14px 90px}
-  .flow .node.hot::after{display:none}
-  .grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+  .app{padding:32px 16px 70px}
 }
 @media (prefers-reduced-motion:reduce){
-  *{transition:none !important;animation:none !important}
+  *{transition:none !important}
 }
 </style>
 </head>
@@ -306,393 +129,45 @@ h1{
 
 <div class="app">
   <header class="top">
-    <div class="title-block">
-      <div class="eyebrow">Terapia Cognitivo-Comportamental · Material de estágio</div>
-      <h1>Distorções cognitivas em contexto</h1>
-      <p class="subtitle">Da fala do paciente à conceituação: cada distorção conectada à regra subjacente, ao domínio de crença nuclear e a uma pergunta socrática de manejo. Selecione cards para compor um PDF.</p>
-    </div>
-
-    <div class="model" aria-label="Modelo cognitivo">
-      <div class="model-label">Modelo cognitivo (Beck)</div>
-      <div class="flow" style="margin-top:12px">
-        <span class="node">Situação</span>
-        <span class="arrow">→</span>
-        <span class="node hot">Pensamento automático</span>
-        <span class="arrow">→</span>
-        <span class="node">Reação (emoção · comportamento · fisiologia)</span>
-      </div>
-      <div class="layers">
-        <div class="layer"><b>Regras e pressupostos</b>&nbsp;· “se… então…”, “devo…” — sustentam o pensamento automático</div>
-        <div class="layer">
-          <b>Crenças nucleares</b>
-          <span class="chips" id="domainChips">
-            <button class="chip amparo" data-domain="amparo" title="Filtrar por desamparo">Desamparo</button>
-            <button class="chip amor" data-domain="amor" title="Filtrar por desamor">Desamor</button>
-            <button class="chip valor" data-domain="valor" title="Filtrar por desvalor">Desvalor</button>
-          </span>
-        </div>
-      </div>
-    </div>
+    <div class="eyebrow">Terapia Cognitivo-Comportamental · Guia de estágio</div>
+    <h1>Ferramentas de apoio clínico</h1>
+    <p class="subtitle">Recursos rápidos de consulta para estagiários em TCC. Escolha uma ferramenta abaixo.</p>
   </header>
 
-  <div class="toolbar">
-    <div class="search">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-      <input type="search" id="searchInput" placeholder="Buscar por nome, exemplo, regra…" aria-label="Buscar distorções">
-    </div>
-    <span class="result-count" id="resultCount"></span>
-    <div class="tb-actions">
-      <button class="btn" id="selectAllBtn">Selecionar visíveis</button>
-      <button class="btn" id="clearFiltersBtn">Limpar filtros</button>
-    </div>
-  </div>
+  <main class="grid">
+    <a class="tool" href="distorcoes.html">
+      <span class="tag"><span class="dot"></span>No ar</span>
+      <h2>Distorções Cognitivas em Contexto</h2>
+      <p>Guia de consulta com exemplo clínico, regra subjacente, domínio de crença nuclear e pergunta socrática para cada distorção. Monta PDF de estudo.</p>
+      <span class="foot">Abrir ferramenta
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </span>
+    </a>
 
-  <main class="grid" id="grid"></main>
+    <a class="tool" href="mapa-cognitivo.html">
+      <span class="tag"><span class="dot"></span>No ar</span>
+      <h2>Construção de Mapa Cognitivo</h2>
+      <p>Monte a conceituação de caso: crença nuclear, regras e pressupostos, e as situações que os ativam — pensamento automático, significado e reação.</p>
+      <span class="foot">Abrir ferramenta
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </span>
+    </a>
+
+    <div class="tool disabled">
+      <span class="badge-soon">Em desenvolvimento</span>
+      <h2>Módulos de Formação</h2>
+      <p>Trilhas de estudo estruturadas sobre os fundamentos e a prática da TCC, organizadas por tema.</p>
+    </div>
+
+    <div class="tool disabled">
+      <span class="badge-soon">Em desenvolvimento</span>
+      <h2>Mapa de Técnicas em TCC</h2>
+      <p>Catálogo navegável de técnicas terapêuticas, com indicação de uso por queixa, fase do tratamento e objetivo clínico.</p>
+    </div>
+  </main>
+
+  <footer class="note">Material de apoio para supervisão clínica · uso interno</footer>
 </div>
 
-<!-- barra flutuante -->
-<div class="floatbar" id="floatbar">
-  <span class="count"><b id="selCount">0</b> selecionada(s)</span>
-  <button class="clear" id="clearSelBtn">limpar</button>
-  <button class="pdf" id="pdfBtn">Gerar PDF</button>
-</div>
-
-<!-- drawer -->
-<div class="overlay" id="overlay"></div>
-<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
-  <div class="drawer-head">
-    <h2 id="drawerTitle"></h2>
-    <button class="close" id="drawerClose" aria-label="Fechar painel">✕</button>
-  </div>
-  <div class="drawer-body" id="drawerBody"></div>
-  <div class="drawer-foot">
-    <button class="btn primary" id="drawerSelectBtn"></button>
-    <div class="drawer-nav">
-      <button class="btn" id="prevBtn" aria-label="Anterior">←</button>
-      <button class="btn" id="nextBtn" aria-label="Próxima">→</button>
-    </div>
-  </div>
-</aside>
-
-<!-- folha de impressão -->
-<div id="printSheet"></div>
-
-<script>
-const DOMAIN_META = {
-  amparo:{label:"Desamparo", cls:"amparo"},
-  amor:{label:"Desamor", cls:"amor"},
-  valor:{label:"Desvalor", cls:"valor"}
-};
-
-const DATA = [
-  {
-    id:"catastrofizacao", nome:"Catastrofização",
-    def:"Prever o pior desfecho possível e tratá-lo como certo, sem pesar alternativas mais prováveis.",
-    exemplo:"“Se eu errar nessa apresentação, vou ser demitido e nunca mais vou me recolocar.”",
-    regra:"Se algo pode dar errado, vai dar errado — e comigo será irreparável.",
-    dominios:["amparo"],
-    socratica:"Qual é o pior cenário, o melhor e o mais realista? Se o pior acontecesse, o que você poderia fazer?"
-  },
-  {
-    id:"dicotomico", nome:"Pensamento dicotômico",
-    def:"Avaliar experiências em categorias absolutas — perfeito ou fracasso — sem enxergar o contínuo entre elas.",
-    exemplo:"“Tirei 8 na prova. Sou um fracasso.”",
-    regra:"Se não for perfeito, não vale nada.",
-    dominios:["valor"],
-    socratica:"Numa escala de 0 a 100, onde essa situação realmente fica? O que existe entre os dois extremos?"
-  },
-  {
-    id:"abstracao", nome:"Abstração seletiva",
-    def:"Focar num detalhe negativo isolado e avaliar toda a situação a partir dele (filtro mental).",
-    exemplo:"“A supervisão foi péssima — a supervisora apontou um erro no meu registro.”",
-    regra:"O que houve de negativo é o que define o todo.",
-    dominios:["valor","amparo"],
-    socratica:"O que mais aconteceu nessa situação que você não está levando em conta?"
-  },
-  {
-    id:"desqualificacao", nome:"Desqualificação do positivo",
-    def:"Registrar experiências positivas, mas descartá-las como se não contassem ou não fossem merecidas.",
-    exemplo:"“Elogiaram meu atendimento, mas foi só educação.”",
-    regra:"Elogios não contam; só as falhas revelam quem eu sou de verdade.",
-    dominios:["valor","amor"],
-    socratica:"Se um colega recebesse exatamente o mesmo elogio, você também diria que ‘não conta’?"
-  },
-  {
-    id:"leitura", nome:"Leitura mental",
-    def:"Presumir saber o que os outros estão pensando, sem evidência e sem verificar.",
-    exemplo:"“O paciente ficou em silêncio — com certeza acha que sou incompetente.”",
-    regra:"Se alguém está sério ou distante comigo, é porque me desaprova.",
-    dominios:["amor"],
-    socratica:"Qual é a evidência para essa leitura? Que outras explicações existem para o comportamento dele?"
-  },
-  {
-    id:"adivinhacao", nome:"Adivinhação do futuro",
-    def:"Tratar previsões negativas como fatos já estabelecidos, agindo (ou desistindo) com base nelas.",
-    exemplo:"“Não adianta me inscrever no processo seletivo; não vou passar.”",
-    regra:"Se eu tentar, vou falhar.",
-    dominios:["amparo"],
-    socratica:"Quantas previsões parecidas você já fez — e quantas se confirmaram? O que os dados mostram?"
-  },
-  {
-    id:"supergeneralizacao", nome:"Supergeneralização",
-    def:"Extrair uma regra universal de um episódio único, marcada por ‘sempre’, ‘nunca’, ‘ninguém’.",
-    exemplo:"“O paciente faltou. Ninguém adere ao meu atendimento.”",
-    regra:"Se falhou uma vez, vai falhar sempre.",
-    dominios:["amparo","valor"],
-    socratica:"Um episódio basta para concluir ‘sempre’? Quais contraexemplos você consegue lembrar?"
-  },
-  {
-    id:"ampliacao", nome:"Ampliação e minimização",
-    def:"Exagerar o peso do negativo e encolher o do positivo — uma balança que só pende para um lado.",
-    exemplo:"“Errar a conceituação foi gravíssimo; conduzir bem a sessão qualquer um faz.”",
-    regra:"Meus erros dizem quem eu sou; meus acertos são sorte.",
-    dominios:["valor"],
-    socratica:"Você usaria essa mesma balança para avaliar um colega na mesma situação?"
-  },
-  {
-    id:"emocional", nome:"Raciocínio emocional",
-    def:"Tomar a emoção como prova da realidade: sinto, logo deve ser verdade.",
-    exemplo:"“Sinto que sou uma fraude, então devo ser mesmo.”",
-    regra:"Se me sinto assim, é porque é verdade.",
-    dominios:["valor","amparo"],
-    socratica:"Sentir algo é evidência de que é verdade? O que os fatos, separados da emoção, mostram?"
-  },
-  {
-    id:"rotulacao", nome:"Rotulação",
-    def:"Colar em si (ou nos outros) um rótulo global e fixo a partir de comportamentos específicos.",
-    exemplo:"“Esqueci o material da sessão. Sou um desastre.”",
-    regra:"Um erro define o que eu sou.",
-    dominios:["valor"],
-    socratica:"Qual é a diferença entre ‘eu falhei nisto’ e ‘eu sou um fracasso’?"
-  },
-  {
-    id:"personalizacao", nome:"Personalização",
-    def:"Atribuir a si a causa de eventos negativos que não estão — ou não estão só — sob seu controle.",
-    exemplo:"“O paciente abandonou a terapia por minha culpa.”",
-    regra:"Se algo ruim acontece ao meu redor, a responsabilidade é minha.",
-    dominios:["amor","valor"],
-    socratica:"Que outros fatores contribuíram para esse desfecho? Qual fatia é realmente sua?"
-  },
-  {
-    id:"imperativos", nome:"Imperativos (“deverias”)",
-    def:"Reger-se por exigências rígidas — ‘devo’, ‘tenho que’ — e punir-se quando não as cumpre.",
-    exemplo:"“Eu deveria dar conta de tudo sem pedir ajuda.”",
-    regra:"Devo ser competente o tempo todo, custe o que custar.",
-    dominios:["valor","amparo"],
-    socratica:"De onde vem essa regra — e a que custo você a mantém? O que muda se trocar ‘devo’ por ‘gostaria’?"
-  },
-  {
-    id:"culpabilizacao", nome:"Culpabilização",
-    def:"Localizar toda a responsabilidade nos outros (ou só em si), apagando a complexidade da situação.",
-    exemplo:"“Minha ansiedade é toda culpa da minha família.”",
-    regra:"Alguém precisa ser o culpado pelo que sinto.",
-    dominios:["amparo"],
-    socratica:"Distribuir a culpa muda o que você pode fazer agora? O que está sob seu controle daqui em diante?"
-  },
-  {
-    id:"comparacao", nome:"Comparação injusta",
-    def:"Medir-se por padrões irreais, comparando-se apenas com quem parece estar melhor.",
-    exemplo:"“Meus colegas atendem muito melhor do que eu; nunca vou chegar lá.”",
-    regra:"Se alguém faz melhor, eu não sou suficiente.",
-    dominios:["valor"],
-    socratica:"A comparação é entre pontos equivalentes de trajetória? E se você se comparar com você mesmo há um ano?"
-  }
-];
-
-/* ======= state ======= */
-let activeDomains = new Set();      // vazio = todas
-let searchTerm = "";
-let selected = new Set();
-let currentDrawerIdx = -1;
-let visibleIds = [];
-
-const grid = document.getElementById("grid");
-const resultCount = document.getElementById("resultCount");
-const floatbar = document.getElementById("floatbar");
-const selCount = document.getElementById("selCount");
-
-/* ======= render grid ======= */
-function matches(d){
-  if(activeDomains.size && ![...activeDomains].some(dom=>d.dominios.includes(dom))) return false;
-  if(searchTerm){
-    const hay = (d.nome+" "+d.def+" "+d.exemplo+" "+d.regra+" "+d.socratica).toLowerCase();
-    if(!hay.includes(searchTerm)) return false;
-  }
-  return true;
-}
-
-function render(){
-  const items = DATA.filter(matches);
-  visibleIds = items.map(d=>d.id);
-  grid.innerHTML = "";
-  if(!items.length){
-    grid.innerHTML = '<div class="empty">Nenhuma distorção corresponde à busca. Ajuste os filtros ou o termo.</div>';
-  }
-  items.forEach((d)=>{
-    const idx = DATA.indexOf(d);
-    const card = document.createElement("article");
-    card.className = "card" + (selected.has(d.id) ? " selected":"");
-    card.innerHTML = `
-      <div class="card-top">
-        <h3 data-open="${idx}">${d.nome}</h3>
-        <span class="num">${String(idx+1).padStart(2,"0")}</span>
-      </div>
-      <p class="hint" data-open="${idx}">${d.def}</p>
-      <div class="card-foot">
-        <span class="dots" title="${d.dominios.map(x=>DOMAIN_META[x].label).join(" · ")}">
-          ${d.dominios.map(x=>`<span class="dot ${x}"></span>`).join("")}
-        </span>
-        <label class="check">
-          <input type="checkbox" data-id="${d.id}" ${selected.has(d.id)?"checked":""}>
-          PDF
-        </label>
-      </div>`;
-    grid.appendChild(card);
-  });
-  resultCount.textContent = `${items.length} de ${DATA.length}`;
-  updateFloatbar();
-}
-
-/* ======= floatbar ======= */
-function updateFloatbar(){
-  selCount.textContent = selected.size;
-  floatbar.classList.toggle("show", selected.size>0);
-}
-
-/* ======= drawer ======= */
-const drawer = document.getElementById("drawer");
-const overlay = document.getElementById("overlay");
-const drawerBody = document.getElementById("drawerBody");
-const drawerTitle = document.getElementById("drawerTitle");
-const drawerSelectBtn = document.getElementById("drawerSelectBtn");
-
-function openDrawer(idx){
-  currentDrawerIdx = idx;
-  const d = DATA[idx];
-  drawerTitle.textContent = d.nome;
-  drawerBody.innerHTML = `
-    <div class="badges">${d.dominios.map(x=>`<span class="badge ${x}">${DOMAIN_META[x].label}</span>`).join("")}</div>
-    <div class="field"><div class="f-label">O que é</div><p>${d.def}</p></div>
-    <div class="field exemplo"><div class="f-label">Exemplo clássico</div><p>${d.exemplo}</p></div>
-    <div class="field regra"><div class="f-label">Regra subjacente típica</div><p>${d.regra}</p></div>
-    <div class="field"><div class="f-label">Domínio de crença nuclear</div><p>${d.dominios.map(x=>DOMAIN_META[x].label).join(" · ")} — o pensamento automático distorcido tende a confirmar e manter a crença deste domínio.</p></div>
-    <div class="field socratica"><div class="f-label">Pergunta socrática de manejo</div><p>${d.socratica}</p></div>`;
-  refreshDrawerBtn();
-  drawer.classList.add("show");
-  overlay.classList.add("show");
-}
-function refreshDrawerBtn(){
-  const d = DATA[currentDrawerIdx];
-  if(!d) return;
-  drawerSelectBtn.textContent = selected.has(d.id) ? "Remover do PDF" : "Adicionar ao PDF";
-}
-function closeDrawer(){
-  drawer.classList.remove("show");
-  overlay.classList.remove("show");
-}
-function stepDrawer(dir){
-  if(!visibleIds.length) return;
-  const curId = DATA[currentDrawerIdx]?.id;
-  let pos = visibleIds.indexOf(curId);
-  pos = (pos + dir + visibleIds.length) % visibleIds.length;
-  openDrawer(DATA.findIndex(x=>x.id===visibleIds[pos]));
-}
-
-/* ======= print ======= */
-function buildPrintSheet(){
-  const items = DATA.filter(d=>selected.has(d.id));
-  const sheet = document.getElementById("printSheet");
-  const today = new Date().toLocaleDateString("pt-BR");
-  sheet.innerHTML = `
-    <div class="ps-cover">
-      <div class="ps-eyebrow">Terapia Cognitivo-Comportamental · Material de estágio</div>
-      <h1>Distorções cognitivas — seleção de estudo</h1>
-      <p>${items.length} distorção(ões) selecionada(s) · Gerado em ${today}. Cada bloco conecta a distorção à regra subjacente, ao domínio de crença nuclear e a uma pergunta socrática de manejo.</p>
-    </div>
-    <div class="ps-model">
-      <div class="ps-flow">Situação → Pensamento automático (onde as distorções operam) → Reação</div>
-      Abaixo dos pensamentos automáticos estão as <b>regras e pressupostos</b> (“se… então…”, “devo…”) e, mais ao fundo, as <b>crenças nucleares</b>, organizadas nos domínios de <b>desamparo</b>, <b>desamor</b> e <b>desvalor</b> (J. Beck). A distorção é o estilo com que o pensamento automático confirma a crença.
-    </div>
-    ${items.map(d=>`
-      <div class="ps-item">
-        <h2>${d.nome}</h2>
-        <div class="ps-domains">${d.dominios.map(x=>DOMAIN_META[x].label).join(" · ")}</div>
-        <div class="ps-row"><span class="ps-k">O que é</span>${d.def}</div>
-        <div class="ps-row ex"><span class="ps-k">Exemplo clássico</span><em>${d.exemplo}</em></div>
-        <div class="ps-row"><span class="ps-k">Regra subjacente típica</span>${d.regra}</div>
-        <div class="ps-row"><span class="ps-k">Pergunta socrática de manejo</span>${d.socratica}</div>
-      </div>`).join("")}
-    <div class="ps-footer">Material de apoio para supervisão clínica · uso interno</div>`;
-}
-
-/* ======= events ======= */
-grid.addEventListener("click", e=>{
-  const open = e.target.closest("[data-open]");
-  if(open){ openDrawer(+open.dataset.open); return; }
-});
-grid.addEventListener("change", e=>{
-  const cb = e.target.closest("input[data-id]");
-  if(!cb) return;
-  cb.checked ? selected.add(cb.dataset.id) : selected.delete(cb.dataset.id);
-  cb.closest(".card").classList.toggle("selected", cb.checked);
-  updateFloatbar(); refreshDrawerBtn();
-});
-
-document.getElementById("searchInput").addEventListener("input", e=>{
-  searchTerm = e.target.value.trim().toLowerCase();
-  render();
-});
-
-document.getElementById("domainChips").addEventListener("click", e=>{
-  const chip = e.target.closest(".chip");
-  if(!chip) return;
-  const dom = chip.dataset.domain;
-  activeDomains.has(dom) ? activeDomains.delete(dom) : activeDomains.add(dom);
-  [...document.querySelectorAll("#domainChips .chip")].forEach(c=>{
-    c.classList.toggle("off", activeDomains.size && !activeDomains.has(c.dataset.domain));
-  });
-  render();
-});
-
-document.getElementById("clearFiltersBtn").addEventListener("click", ()=>{
-  activeDomains.clear(); searchTerm="";
-  document.getElementById("searchInput").value="";
-  document.querySelectorAll("#domainChips .chip").forEach(c=>c.classList.remove("off"));
-  render();
-});
-
-document.getElementById("selectAllBtn").addEventListener("click", ()=>{
-  visibleIds.forEach(id=>selected.add(id));
-  render();
-});
-
-document.getElementById("clearSelBtn").addEventListener("click", ()=>{
-  selected.clear(); render(); refreshDrawerBtn();
-});
-
-document.getElementById("pdfBtn").addEventListener("click", ()=>{
-  if(!selected.size) return;
-  buildPrintSheet();
-  window.print();
-});
-
-drawerSelectBtn.addEventListener("click", ()=>{
-  const d = DATA[currentDrawerIdx];
-  selected.has(d.id) ? selected.delete(d.id) : selected.add(d.id);
-  render(); refreshDrawerBtn();
-});
-document.getElementById("drawerClose").addEventListener("click", closeDrawer);
-overlay.addEventListener("click", closeDrawer);
-document.getElementById("prevBtn").addEventListener("click", ()=>stepDrawer(-1));
-document.getElementById("nextBtn").addEventListener("click", ()=>stepDrawer(1));
-document.addEventListener("keydown", e=>{
-  if(!drawer.classList.contains("show")) return;
-  if(e.key==="Escape") closeDrawer();
-  if(e.key==="ArrowLeft") stepDrawer(-1);
-  if(e.key==="ArrowRight") stepDrawer(1);
-});
-
-render();
-</script>
 </body>
 </html>

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Construção de Mapa Cognitivo — Guia de Estágio (TCC)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F3F6F5;
+  --card:#FFFFFF;
+  --ink:#172523;
+  --ink-soft:#4E605D;
+  --teal:#0F5F55;
+  --teal-soft:#E3EEEC;
+  --line:#D9E0DE;
+  --amparo:#A16207;
+  --amparo-bg:#FBF3E2;
+  --amor:#B0455F;
+  --amor-bg:#FAEBEF;
+  --valor:#5A4FB0;
+  --valor-bg:#EEECF9;
+  --radius:14px;
+  --shadow:0 1px 2px rgba(23,37,35,.06),0 8px 24px rgba(23,37,35,.07);
+  --font-display:"Bricolage Grotesque",system-ui,sans-serif;
+  --font-body:"Inter",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:var(--font-body);
+  background:var(--paper);
+  color:var(--ink);
+  font-size:14px;
+  line-height:1.5;
+}
+button{font-family:inherit;cursor:pointer}
+input,textarea,select{font-family:inherit;font-size:inherit;color:inherit}
+
+.app{
+  max-width:1180px;
+  margin:0 auto;
+  padding:20px 24px 90px;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+
+header.top{display:flex;flex-direction:column;gap:8px}
+.back-link{
+  font-size:12px;font-weight:600;color:var(--ink-soft);
+  text-decoration:none;width:fit-content;
+}
+.back-link:hover{color:var(--teal)}
+.eyebrow{
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--teal);font-weight:600;
+}
+h1{
+  font-family:var(--font-display);
+  font-weight:700;font-size:clamp(24px,3vw,32px);
+  line-height:1.12;letter-spacing:-.01em;
+}
+.subtitle{color:var(--ink-soft);font-size:13.5px;max-width:62ch}
+
+/* ======= CASE HEADER (crença nuclear + regra) ======= */
+.case-head{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:16px 18px;
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;
+}
+@media (max-width:760px){.case-head{grid-template-columns:1fr}}
+.field-group{display:flex;flex-direction:column;gap:6px}
+.f-label{
+  font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  font-weight:700;color:var(--teal);
+}
+.f-hint{font-size:11px;color:var(--ink-soft);margin-top:-3px}
+input[type=text],textarea{
+  border:1px solid var(--line);border-radius:9px;
+  padding:9px 11px;background:var(--paper);color:var(--ink);
+  resize:vertical;width:100%;
+}
+input[type=text]:focus,textarea:focus{outline:2px solid var(--teal);outline-offset:1px;border-color:var(--teal)}
+textarea{min-height:52px;font-size:13.5px}
+.domain-picker{display:flex;gap:6px;flex-wrap:wrap}
+.chip{
+  border:1.5px solid var(--line);border-radius:99px;
+  font-size:11.5px;font-weight:600;padding:5px 12px;
+  background:#fff;color:var(--ink-soft);transition:all .15s;
+}
+.chip.amparo.active{color:var(--amparo);border-color:var(--amparo);background:var(--amparo-bg)}
+.chip.amor.active{color:var(--amor);border-color:var(--amor);background:var(--amor-bg)}
+.chip.valor.active{color:var(--valor);border-color:var(--valor);background:var(--valor-bg)}
+
+/* ======= TOOLBAR ======= */
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn{
+  border:1px solid var(--line);background:var(--card);
+  border-radius:10px;padding:8px 14px;font-size:12.5px;font-weight:600;
+  color:var(--ink);transition:all .15s;
+}
+.btn:hover{border-color:var(--teal);color:var(--teal)}
+.btn.primary{background:var(--teal);color:#fff;border-color:var(--teal)}
+.btn.primary:hover{background:#0B7263;color:#fff}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--ink-soft)}
+.btn.ghost:hover{color:var(--amor);border-color:transparent}
+.tb-actions{margin-left:auto;display:flex;gap:8px}
+
+/* ======= EPISODES ======= */
+.episodes{display:flex;flex-direction:column;gap:12px}
+.episode{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:14px 16px;
+  display:flex;flex-direction:column;gap:10px;position:relative;
+}
+.episode-head{display:flex;align-items:center;gap:8px}
+.episode-num{
+  font-size:10px;font-weight:700;color:var(--ink-soft);opacity:.6;
+  font-variant-numeric:tabular-nums;
+}
+.episode-remove{margin-left:auto}
+.episode-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+}
+@media (max-width:900px){.episode-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.episode-grid{grid-template-columns:1fr}}
+.episode-grid textarea{min-height:64px;font-size:13px}
+.empty-episodes{
+  text-align:center;color:var(--ink-soft);padding:28px;font-size:13px;
+  border:1.5px dashed var(--line);border-radius:var(--radius);
+}
+
+/* ======= DIAGRAM ======= */
+.diagram-section{display:flex;flex-direction:column;gap:10px}
+.diagram-label{
+  font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  font-weight:700;color:var(--ink-soft);
+}
+.diagram{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:24px;
+  display:flex;flex-direction:column;align-items:center;gap:0;
+}
+.d-box{
+  border:1.5px solid var(--line);border-radius:10px;
+  padding:10px 16px;background:#fff;text-align:center;
+  max-width:520px;
+}
+.d-box .d-label{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--teal);margin-bottom:3px}
+.d-box .d-text{font-size:13px;font-weight:500;color:var(--ink)}
+.d-box.core{border-color:var(--teal);background:var(--teal-soft)}
+.d-box.core .d-text{font-weight:600}
+.d-domain-badge{
+  display:inline-block;margin-top:5px;font-size:10px;font-weight:700;
+  border-radius:99px;padding:2px 9px;
+}
+.d-domain-badge.amparo{color:var(--amparo);background:var(--amparo-bg)}
+.d-domain-badge.amor{color:var(--amor);background:var(--amor-bg)}
+.d-domain-badge.valor{color:var(--valor);background:var(--valor-bg)}
+.d-arrow-down{
+  width:1.5px;height:22px;background:var(--line);position:relative;
+}
+.d-arrow-down::after{
+  content:"";position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);
+  border-left:5px solid transparent;border-right:5px solid transparent;
+  border-top:6px solid var(--line);
+}
+.d-fan{
+  display:flex;gap:16px;flex-wrap:wrap;justify-content:center;
+  padding-top:6px;border-top:1.5px solid var(--line);width:100%;
+  margin-top:0;
+}
+.d-branch{
+  display:flex;flex-direction:column;align-items:center;gap:0;
+  flex:1 1 240px;max-width:280px;position:relative;padding-top:14px;
+}
+.d-branch::before{
+  content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:1.5px;height:14px;background:var(--line);
+}
+.d-branch .d-box{width:100%;font-size:12px}
+.d-branch .d-arrow-down{height:14px}
+.d-empty-diagram{color:var(--ink-soft);font-size:13px;padding:20px;text-align:center}
+
+/* ======= PRINT SHEET ======= */
+#printSheet{display:none}
+@media print{
+  body{background:#fff}
+  .app{display:none !important}
+  #printSheet{display:block;font-family:var(--font-body);color:#172523}
+  .ps-cover{margin-bottom:20px;border-bottom:2.5px solid #0F5F55;padding-bottom:14px}
+  .ps-eyebrow{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#0F5F55;font-weight:700}
+  .ps-cover h1{font-family:var(--font-display);font-size:23px;margin:4px 0 6px}
+  .ps-cover p{font-size:11px;color:#4E605D}
+  .ps-core{border:1px solid #D9E0DE;border-radius:10px;padding:12px 14px;margin-bottom:14px}
+  .ps-core .ps-k{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:#0F5F55;display:block;margin-bottom:2px}
+  .ps-core .ps-v{font-size:12.5px;margin-bottom:8px}
+  .ps-item{
+    break-inside:avoid;border:1px solid #D9E0DE;border-radius:10px;
+    padding:12px 14px;margin-bottom:10px;
+  }
+  .ps-item h2{font-family:var(--font-display);font-size:14px;margin-bottom:8px}
+  .ps-row{margin-bottom:6px;font-size:11px;line-height:1.45}
+  .ps-row .ps-k{font-size:9px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:#0F5F55;display:block}
+  .ps-footer{margin-top:12px;font-size:9.5px;color:#8A9995;text-align:center}
+  @page{margin:16mm}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important}}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="top">
+    <a href="index.html" class="back-link">← Menu de ferramentas</a>
+    <div class="eyebrow">Terapia Cognitivo-Comportamental · Material de estágio</div>
+    <h1>Construção de mapa cognitivo</h1>
+    <p class="subtitle">Monte a conceituação de caso a partir do modelo de Beck: uma crença nuclear e a regra/pressuposto que a protege, ativadas por situações específicas — cada uma gerando um pensamento automático, um significado e uma reação. Adicione quantas situações forem necessárias e exporte o mapa em PDF.</p>
+  </header>
+
+  <section class="case-head">
+    <div class="field-group">
+      <label class="f-label" for="coreBelief">Crença nuclear</label>
+      <span class="f-hint">A crença mais profunda sobre si, os outros ou o mundo (ex.: "sou incompetente")</span>
+      <textarea id="coreBelief" placeholder="Ex.: Eu sou incapaz."></textarea>
+      <div class="domain-picker" id="domainPicker">
+        <button type="button" class="chip amparo" data-domain="amparo">Desamparo</button>
+        <button type="button" class="chip amor" data-domain="amor">Desamor</button>
+        <button type="button" class="chip valor" data-domain="valor">Desvalor</button>
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="f-label" for="coreRule">Regra, pressuposto e estratégia compensatória</label>
+      <span class="f-hint">O "se... então..." ou "devo..." que protege a crença nuclear no dia a dia</span>
+      <textarea id="coreRule" placeholder="Ex.: Se eu não for perfeito em tudo, vão perceber que sou incapaz — por isso, controlo cada detalhe."></textarea>
+    </div>
+  </section>
+
+  <div class="toolbar">
+    <button class="btn primary" id="addEpisodeBtn">+ Adicionar situação</button>
+    <div class="tb-actions">
+      <button class="btn" id="pdfBtn">Gerar PDF</button>
+    </div>
+  </div>
+
+  <div class="episodes" id="episodes"></div>
+
+  <div class="diagram-section">
+    <div class="diagram-label">Mapa cognitivo</div>
+    <div class="diagram" id="diagram"></div>
+  </div>
+</div>
+
+<div id="printSheet"></div>
+
+<script>
+const DOMAIN_META = {
+  amparo:{label:"Desamparo", cls:"amparo"},
+  amor:{label:"Desamor", cls:"amor"},
+  valor:{label:"Desvalor", cls:"valor"}
+};
+
+let state = {
+  coreBelief:"",
+  coreDomain:null,
+  coreRule:"",
+  episodes:[]
+};
+let episodeSeq = 0;
+
+function newEpisode(){
+  episodeSeq++;
+  return {id:"ep"+episodeSeq, situacao:"", pensamento:"", significado:"", reacao:""};
+}
+
+const coreBeliefEl = document.getElementById("coreBelief");
+const coreRuleEl = document.getElementById("coreRule");
+const episodesEl = document.getElementById("episodes");
+const diagramEl = document.getElementById("diagram");
+
+coreBeliefEl.addEventListener("input", e=>{ state.coreBelief = e.target.value; renderDiagram(); });
+coreRuleEl.addEventListener("input", e=>{ state.coreRule = e.target.value; renderDiagram(); });
+
+document.getElementById("domainPicker").addEventListener("click", e=>{
+  const chip = e.target.closest(".chip");
+  if(!chip) return;
+  const dom = chip.dataset.domain;
+  state.coreDomain = state.coreDomain === dom ? null : dom;
+  refreshDomainChips();
+  renderDiagram();
+});
+function refreshDomainChips(){
+  document.querySelectorAll("#domainPicker .chip").forEach(c=>{
+    c.classList.toggle("active", c.dataset.domain === state.coreDomain);
+  });
+}
+
+function renderEpisodes(){
+  episodesEl.innerHTML = "";
+  if(!state.episodes.length){
+    episodesEl.innerHTML = '<div class="empty-episodes">Nenhuma situação adicionada ainda. Clique em “Adicionar situação” para começar.</div>';
+    return;
+  }
+  state.episodes.forEach((ep, idx)=>{
+    const card = document.createElement("article");
+    card.className = "episode";
+    card.innerHTML = `
+      <div class="episode-head">
+        <span class="episode-num">SITUAÇÃO ${String(idx+1).padStart(2,"0")}</span>
+        <button type="button" class="btn ghost episode-remove" data-remove="${ep.id}">Remover</button>
+      </div>
+      <div class="episode-grid">
+        <div class="field-group">
+          <label class="f-label">Situação</label>
+          <textarea data-field="situacao" data-id="${ep.id}" placeholder="O que aconteceu?">${ep.situacao}</textarea>
+        </div>
+        <div class="field-group">
+          <label class="f-label">Pensamento automático</label>
+          <textarea data-field="pensamento" data-id="${ep.id}" placeholder="O que passou pela cabeça?">${ep.pensamento}</textarea>
+        </div>
+        <div class="field-group">
+          <label class="f-label">Significado</label>
+          <textarea data-field="significado" data-id="${ep.id}" placeholder="O que isso significa sobre a regra/crença?">${ep.significado}</textarea>
+        </div>
+        <div class="field-group">
+          <label class="f-label">Reação</label>
+          <textarea data-field="reacao" data-id="${ep.id}" placeholder="Emoção, comportamento, fisiologia">${ep.reacao}</textarea>
+        </div>
+      </div>`;
+    episodesEl.appendChild(card);
+  });
+}
+
+episodesEl.addEventListener("input", e=>{
+  const t = e.target.closest("textarea[data-field]");
+  if(!t) return;
+  const ep = state.episodes.find(x=>x.id===t.dataset.id);
+  if(!ep) return;
+  ep[t.dataset.field] = t.value;
+  renderDiagram();
+});
+episodesEl.addEventListener("click", e=>{
+  const btn = e.target.closest("[data-remove]");
+  if(!btn) return;
+  state.episodes = state.episodes.filter(x=>x.id!==btn.dataset.remove);
+  renderEpisodes();
+  renderDiagram();
+});
+
+document.getElementById("addEpisodeBtn").addEventListener("click", ()=>{
+  state.episodes.push(newEpisode());
+  renderEpisodes();
+  renderDiagram();
+});
+
+function esc(s){
+  return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+function renderDiagram(){
+  const hasCore = state.coreBelief.trim() || state.coreRule.trim();
+  if(!hasCore && !state.episodes.length){
+    diagramEl.innerHTML = '<div class="d-empty-diagram">Preencha a crença nuclear e adicione situações para ver o mapa tomar forma.</div>';
+    return;
+  }
+  const domainBadge = state.coreDomain
+    ? `<span class="d-domain-badge ${DOMAIN_META[state.coreDomain].cls}">${DOMAIN_META[state.coreDomain].label}</span>`
+    : "";
+  let html = `
+    <div class="d-box core">
+      <div class="d-label">Crença nuclear</div>
+      <div class="d-text">${esc(state.coreBelief) || "—"}</div>
+      ${domainBadge}
+    </div>
+    <div class="d-arrow-down"></div>
+    <div class="d-box">
+      <div class="d-label">Regra e estratégia compensatória</div>
+      <div class="d-text">${esc(state.coreRule) || "—"}</div>
+    </div>`;
+  if(state.episodes.length){
+    html += `<div class="d-arrow-down"></div><div class="d-fan">`;
+    state.episodes.forEach((ep, idx)=>{
+      html += `
+        <div class="d-branch">
+          <div class="d-box"><div class="d-label">Situação ${idx+1}</div><div class="d-text">${esc(ep.situacao) || "—"}</div></div>
+          <div class="d-arrow-down"></div>
+          <div class="d-box"><div class="d-label">Pensamento automático</div><div class="d-text">${esc(ep.pensamento) || "—"}</div></div>
+          <div class="d-arrow-down"></div>
+          <div class="d-box"><div class="d-label">Significado</div><div class="d-text">${esc(ep.significado) || "—"}</div></div>
+          <div class="d-arrow-down"></div>
+          <div class="d-box"><div class="d-label">Reação</div><div class="d-text">${esc(ep.reacao) || "—"}</div></div>
+        </div>`;
+    });
+    html += `</div>`;
+  }
+  diagramEl.innerHTML = html;
+}
+
+function buildPrintSheet(){
+  const sheet = document.getElementById("printSheet");
+  const today = new Date().toLocaleDateString("pt-BR");
+  const domainLabel = state.coreDomain ? DOMAIN_META[state.coreDomain].label : "—";
+  sheet.innerHTML = `
+    <div class="ps-cover">
+      <div class="ps-eyebrow">Terapia Cognitivo-Comportamental · Material de estágio</div>
+      <h1>Mapa cognitivo — conceituação de caso</h1>
+      <p>Gerado em ${today}.</p>
+    </div>
+    <div class="ps-core">
+      <span class="ps-k">Crença nuclear</span><span class="ps-v">${esc(state.coreBelief) || "—"}</span>
+      <span class="ps-k">Domínio</span><span class="ps-v">${domainLabel}</span>
+      <span class="ps-k">Regra e estratégia compensatória</span><span class="ps-v">${esc(state.coreRule) || "—"}</span>
+    </div>
+    ${state.episodes.map((ep, idx)=>`
+      <div class="ps-item">
+        <h2>Situação ${idx+1}</h2>
+        <div class="ps-row"><span class="ps-k">Situação</span>${esc(ep.situacao) || "—"}</div>
+        <div class="ps-row"><span class="ps-k">Pensamento automático</span>${esc(ep.pensamento) || "—"}</div>
+        <div class="ps-row"><span class="ps-k">Significado</span>${esc(ep.significado) || "—"}</div>
+        <div class="ps-row"><span class="ps-k">Reação</span>${esc(ep.reacao) || "—"}</div>
+      </div>`).join("")}
+    <div class="ps-footer">Material de apoio para supervisão clínica · uso interno</div>`;
+}
+
+document.getElementById("pdfBtn").addEventListener("click", ()=>{
+  buildPrintSheet();
+  window.print();
+});
+
+state.episodes.push(newEpisode());
+renderEpisodes();
+renderDiagram();
+</script>
+</body>
+</html>
