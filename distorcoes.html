@@ -140,6 +140,74 @@ h1{
 .btn:hover{border-color:var(--teal);color:var(--teal)}
 .result-count{font-size:12px;color:var(--ink-soft)}
 
+/* ======= CLASSIFIER ======= */
+.classifier{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:16px 18px;
+  display:flex;flex-direction:column;gap:10px;
+}
+.classifier .c-label{
+  font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--teal);font-weight:700;
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+}
+.classifier .c-beta{
+  font-size:9.5px;font-weight:700;letter-spacing:.06em;
+  color:var(--ink-soft);background:var(--paper);
+  border:1px solid var(--line);border-radius:99px;padding:2px 8px;
+}
+.classifier .c-hint{font-size:12px;color:var(--ink-soft);max-width:72ch}
+.c-input-row{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.c-input-row textarea{
+  flex:1 1 320px;min-height:56px;resize:vertical;
+  border:1px solid var(--line);border-radius:10px;
+  padding:10px 12px;background:var(--paper);color:var(--ink);
+  font-family:inherit;font-size:13.5px;
+}
+.c-input-row textarea:focus{outline:2px solid var(--teal);outline-offset:1px;border-color:var(--teal)}
+.c-btn{
+  background:var(--teal);color:#fff;border:none;
+  border-radius:10px;padding:10px 18px;font-size:13px;font-weight:600;
+  transition:all .15s;flex-shrink:0;
+}
+.c-btn:hover{background:#0B7263}
+.c-btn:disabled{opacity:.55;cursor:wait}
+.c-status{font-size:12px;color:var(--ink-soft);display:none}
+.c-status.show{display:block}
+.c-progress{
+  height:4px;border-radius:99px;background:var(--paper);
+  overflow:hidden;display:none;
+}
+.c-progress.show{display:block}
+.c-progress .bar{height:100%;width:0%;background:var(--teal);transition:width .2s;border-radius:99px}
+.c-results{display:none;flex-direction:column;gap:8px;margin-top:2px}
+.c-results.show{display:flex}
+.c-results .r-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.c-result{
+  display:flex;align-items:center;gap:12px;
+  border:1px solid var(--line);border-radius:10px;
+  padding:10px 14px;background:#fff;
+  cursor:pointer;transition:all .15s;text-align:left;width:100%;
+}
+.c-result:hover{border-color:var(--teal);transform:translateY(-1px)}
+.c-result .r-rank{
+  font-size:11px;font-weight:700;color:var(--teal);
+  font-variant-numeric:tabular-nums;flex-shrink:0;
+}
+.c-result .r-name{font-family:var(--font-display);font-weight:600;font-size:14px;flex-shrink:0}
+.c-result .r-bar{
+  display:block;flex:1;height:6px;border-radius:99px;background:var(--paper);overflow:hidden;
+  min-width:60px;
+}
+.c-result .r-bar .fill{display:block;height:100%;background:var(--teal);border-radius:99px}
+.c-result .r-pct{font-size:11px;color:var(--ink-soft);font-variant-numeric:tabular-nums;flex-shrink:0}
+.c-note{font-size:11px;color:var(--ink-soft);font-style:italic}
+.c-error{font-size:12px;color:var(--amor);display:none}
+.c-error.show{display:block}
+
 /* ======= GRID ======= */
 .grid{
   display:grid;
@@ -352,6 +420,19 @@ h1{
       <button class="btn" id="clearFiltersBtn">Limpar filtros</button>
     </div>
   </div>
+
+  <section class="classifier" aria-label="Classificador de pensamentos">
+    <div class="c-label">Classificar um pensamento <span class="c-beta">beta · IA no navegador</span></div>
+    <p class="c-hint">Escreva livremente um pensamento (seu ou de um paciente) e o sistema sugere as distorções mais próximas por similaridade semântica. As sugestões são hipóteses de estudo, não um gabarito: a decisão clínica é sua e vale discutir em supervisão.</p>
+    <div class="c-input-row">
+      <textarea id="cInput" placeholder="Ex.: “Se eu falar na reunião, todo mundo vai perceber que eu não sei nada.”" aria-label="Pensamento para classificar"></textarea>
+      <button class="c-btn" id="cBtn">Sugerir classificação</button>
+    </div>
+    <div class="c-progress" id="cProgress"><div class="bar" id="cProgressBar"></div></div>
+    <div class="c-status" id="cStatus"></div>
+    <div class="c-error" id="cError"></div>
+    <div class="c-results" id="cResults"></div>
+  </section>
 
   <main class="grid" id="grid"></main>
 </div>
@@ -699,6 +780,141 @@ document.addEventListener("keydown", e=>{
 });
 
 render();
+
+/* ======= classificador semântico ======= */
+const cBtn = document.getElementById("cBtn");
+const cInput = document.getElementById("cInput");
+const cStatus = document.getElementById("cStatus");
+const cError = document.getElementById("cError");
+const cProgress = document.getElementById("cProgress");
+const cProgressBar = document.getElementById("cProgressBar");
+const cResults = document.getElementById("cResults");
+
+let embedder = null;
+let anchorData = null;
+let loadingPromise = null;
+
+function setStatus(msg){
+  cStatus.textContent = msg;
+  cStatus.classList.toggle("show", !!msg);
+}
+function setError(msg){
+  cError.textContent = msg;
+  cError.classList.toggle("show", !!msg);
+}
+
+async function loadModel(){
+  if(embedder && anchorData) return;
+  if(loadingPromise) return loadingPromise;
+  loadingPromise = (async ()=>{
+    setError("");
+    cProgress.classList.add("show");
+    setStatus("Preparando o classificador…");
+
+    const [{ pipeline, env }, anchorsResp] = await Promise.all([
+      import("https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2"),
+      fetch("distorcoes-embeddings.json")
+    ]);
+    if(!anchorsResp.ok) throw new Error("Não foi possível carregar as âncoras.");
+    anchorData = await anchorsResp.json();
+
+    env.allowLocalModels = false;
+    const progresses = {};
+    embedder = await pipeline("feature-extraction", anchorData.model, {
+      quantized:true,
+      progress_callback: p=>{
+        if(p.status==="progress" && p.file){
+          progresses[p.file] = {loaded:p.loaded||0, total:p.total||0};
+          let loaded=0, total=0;
+          Object.values(progresses).forEach(x=>{loaded+=x.loaded; total+=x.total});
+          if(total>0){
+            const pct = Math.min(100, Math.round(loaded/total*100));
+            cProgressBar.style.width = pct+"%";
+            setStatus(`Baixando o modelo de linguagem (${pct}%) — só na primeira vez, depois fica salvo no navegador.`);
+          }
+        }
+      }
+    });
+    cProgressBar.style.width = "100%";
+    setStatus("");
+    cProgress.classList.remove("show");
+  })();
+  try{ await loadingPromise; }
+  catch(err){ loadingPromise = null; throw err; }
+}
+
+function cosine(a, b){
+  let s = 0;
+  for(let i=0;i<a.length;i++) s += a[i]*b[i];
+  return s; // vetores já normalizados
+}
+
+async function classify(){
+  const text = cInput.value.trim();
+  setError("");
+  cResults.classList.remove("show");
+  if(text.length < 8){
+    setError("Escreva o pensamento com um pouco mais de detalhe (uma frase completa ajuda).");
+    return;
+  }
+  cBtn.disabled = true;
+  try{
+    await loadModel();
+    setStatus("Analisando…");
+    const out = await embedder(text, {pooling:"mean", normalize:true});
+    const q = Array.from(out.data);
+    const scores = Object.entries(anchorData.anchors).map(([id, vecs])=>{
+      const sims = vecs.map(v=>cosine(q, v)).sort((a,b)=>b-a);
+      const score = (sims[0] + (sims[1] ?? sims[0])) / 2;
+      return {id, score};
+    }).sort((a,b)=>b.score-a.score);
+    setStatus("");
+    renderClassification(scores);
+  }catch(err){
+    setStatus("");
+    cProgress.classList.remove("show");
+    setError("Não foi possível carregar o classificador (verifique a conexão e tente de novo).");
+    console.error(err);
+  }finally{
+    cBtn.disabled = false;
+  }
+}
+
+function renderClassification(scores){
+  const top = scores.slice(0,3);
+  const best = top[0];
+  if(best.score < 0.32){
+    cResults.innerHTML = '<div class="c-note">Não reconheci uma distorção com confiança suficiente nesse texto. Tente reformular como o pensamento soaria na primeira pessoa (ex.: “eu nunca vou…”), ou explore os cards abaixo.</div>';
+    cResults.classList.add("show");
+    return;
+  }
+  const maxScore = best.score;
+  cResults.innerHTML = '<div class="r-label">Sugestões — toque para abrir</div>' +
+    top.map((s, i)=>{
+      const d = DATA.find(x=>x.id===s.id);
+      const idx = DATA.indexOf(d);
+      const rel = Math.round(s.score/maxScore*100);
+      const pct = Math.round(s.score*100);
+      return `
+        <button type="button" class="c-result" data-open-result="${idx}">
+          <span class="r-rank">${i+1}º</span>
+          <span class="r-name">${d.nome}</span>
+          <span class="r-bar"><span class="fill" style="width:${rel}%"></span></span>
+          <span class="r-pct">${pct}% sim.</span>
+        </button>`;
+    }).join("") +
+    '<div class="c-note">Similaridade semântica com exemplos típicos de cada distorção. Um mesmo pensamento pode conter mais de uma distorção — as fronteiras são discutíveis, e discuti-las é parte do exercício.</div>';
+  cResults.classList.add("show");
+}
+
+cResults.addEventListener("click", e=>{
+  const btn = e.target.closest("[data-open-result]");
+  if(btn) openDrawer(+btn.dataset.openResult);
+});
+cBtn.addEventListener("click", classify);
+cInput.addEventListener("keydown", e=>{
+  if(e.key==="Enter" && (e.metaKey || e.ctrlKey)){ e.preventDefault(); classify(); }
+});
 </script>
 </body>
 </html>
