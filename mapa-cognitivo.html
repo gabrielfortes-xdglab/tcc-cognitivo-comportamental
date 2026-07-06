@@ -281,8 +281,26 @@ const coreRuleEl = document.getElementById("coreRule");
 const episodesEl = document.getElementById("episodes");
 const diagramEl = document.getElementById("diagram");
 
-coreBeliefEl.addEventListener("input", e=>{ state.coreBelief = e.target.value; renderDiagram(); });
-coreRuleEl.addEventListener("input", e=>{ state.coreRule = e.target.value; renderDiagram(); });
+const STORAGE_KEY = "mapaCognitivoTCC";
+let saveTimer = null;
+function persist(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(()=>{
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify({state, episodeSeq})); }catch(e){}
+  }, 300);
+}
+function restore(){
+  let saved;
+  try{ saved = JSON.parse(localStorage.getItem(STORAGE_KEY)); }catch(e){ saved = null; }
+  if(!saved || !saved.state) return;
+  state = saved.state;
+  episodeSeq = saved.episodeSeq || 0;
+  coreBeliefEl.value = state.coreBelief || "";
+  coreRuleEl.value = state.coreRule || "";
+}
+
+coreBeliefEl.addEventListener("input", e=>{ state.coreBelief = e.target.value; renderDiagram(); persist(); });
+coreRuleEl.addEventListener("input", e=>{ state.coreRule = e.target.value; renderDiagram(); persist(); });
 
 document.getElementById("domainPicker").addEventListener("click", e=>{
   const chip = e.target.closest(".chip");
@@ -291,6 +309,7 @@ document.getElementById("domainPicker").addEventListener("click", e=>{
   state.coreDomain = state.coreDomain === dom ? null : dom;
   refreshDomainChips();
   renderDiagram();
+  persist();
 });
 function refreshDomainChips(){
   document.querySelectorAll("#domainPicker .chip").forEach(c=>{
@@ -341,19 +360,25 @@ episodesEl.addEventListener("input", e=>{
   if(!ep) return;
   ep[t.dataset.field] = t.value;
   renderDiagram();
+  persist();
 });
 episodesEl.addEventListener("click", e=>{
   const btn = e.target.closest("[data-remove]");
   if(!btn) return;
+  const ep = state.episodes.find(x=>x.id===btn.dataset.remove);
+  const preenchido = ep && (ep.situacao || ep.pensamento || ep.significado || ep.reacao);
+  if(preenchido && !confirm("Remover esta situação? O conteúdo será perdido.")) return;
   state.episodes = state.episodes.filter(x=>x.id!==btn.dataset.remove);
   renderEpisodes();
   renderDiagram();
+  persist();
 });
 
 document.getElementById("addEpisodeBtn").addEventListener("click", ()=>{
   state.episodes.push(newEpisode());
   renderEpisodes();
   renderDiagram();
+  persist();
 });
 
 function esc(s){
@@ -430,7 +455,9 @@ document.getElementById("pdfBtn").addEventListener("click", ()=>{
   window.print();
 });
 
-state.episodes.push(newEpisode());
+restore();
+if(!state.episodes.length) state.episodes.push(newEpisode());
+refreshDomainChips();
 renderEpisodes();
 renderDiagram();
 </script>

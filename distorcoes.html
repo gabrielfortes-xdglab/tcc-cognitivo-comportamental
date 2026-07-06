@@ -204,7 +204,12 @@ h1{
 }
 .c-result .r-bar .fill{display:block;height:100%;background:var(--teal);border-radius:99px}
 .c-result .r-pct{font-size:11px;color:var(--ink-soft);font-variant-numeric:tabular-nums;flex-shrink:0}
-.c-note{font-size:11px;color:var(--ink-soft);font-style:italic}
+.c-note{font-size:11px;color:var(--ink-soft);font-style:italic;margin-top:4px}
+.c-note-forte{
+  font-style:normal;font-weight:600;color:var(--ink);
+  background:var(--amparo-bg);border:1px solid var(--amparo);
+  border-radius:8px;padding:8px 12px;margin-top:8px;
+}
 .c-error{font-size:12px;color:var(--amor);display:none}
 .c-error.show{display:block}
 
@@ -246,6 +251,7 @@ h1{
   display:flex;align-items:center;gap:5px;
   font-size:11px;font-weight:600;color:var(--ink-soft);
   user-select:none;cursor:pointer;
+  padding:8px 4px;margin:-8px -4px;
 }
 .check input{accent-color:var(--teal);width:14px;height:14px;cursor:pointer}
 .empty{
@@ -894,16 +900,17 @@ function renderClassification(scores){
       const d = DATA.find(x=>x.id===s.id);
       const idx = DATA.indexOf(d);
       const rel = Math.round(s.score/maxScore*100);
-      const pct = Math.round(s.score*100);
+      const rotulo = s.score>=0.55 ? "Alta similaridade" : (s.score>=0.40 ? "Média similaridade" : "Baixa similaridade");
       return `
         <button type="button" class="c-result" data-open-result="${idx}">
           <span class="r-rank">${i+1}º</span>
           <span class="r-name">${d.nome}</span>
           <span class="r-bar"><span class="fill" style="width:${rel}%"></span></span>
-          <span class="r-pct">${pct}% sim.</span>
+          <span class="r-pct">${rotulo}</span>
         </button>`;
     }).join("") +
-    '<div class="c-note">Similaridade semântica com exemplos típicos de cada distorção. Um mesmo pensamento pode conter mais de uma distorção — as fronteiras são discutíveis, e discuti-las é parte do exercício.</div>';
+    '<div class="c-note c-note-forte">Isto é similaridade de texto com exemplos-âncora, não uma classificação clínica validada. Use como ponto de partida para pensar — a decisão é sua, e vale levar o caso à supervisão.</div>' +
+    '<div class="c-note">Um mesmo pensamento pode conter mais de uma distorção — as fronteiras são discutíveis, e discuti-las é parte do exercício.</div>';
   cResults.classList.add("show");
 }
 
