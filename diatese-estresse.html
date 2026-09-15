@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diátese e estresse nas crenças desadaptativas: do modelo à clínica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,500&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Todo o estilo fica sob .dte para não interferir na página que incorporar o bloco */
+html,body{margin:0}
+.dte{
+  --paper:#EEF2F4; --surface:#FFFFFF; --ink:#18222E; --muted:#56626F;
+  --line:#CBD3DA; --diat:#1D6E73; --stress:#9A6414; --episode:#9E2F45; --cell:#DCE3E8; --ok:#2F6B3A;
+  background:var(--paper);color:var(--ink);
+  font-family:"Public Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  font-size:17px;line-height:1.55;
+}
+@media (prefers-color-scheme: dark){
+  .dte:not([data-theme="light"]){
+    --paper:#10161C; --surface:#18212A; --ink:#E6EBEF; --muted:#9AA6B2;
+    --line:#2E3A45; --diat:#56B8B4; --stress:#E0A94A; --episode:#E3798B; --cell:#24303A; --ok:#7CC58A;
+  }
+}
+.dte[data-theme="dark"]{
+  --paper:#10161C; --surface:#18212A; --ink:#E6EBEF; --muted:#9AA6B2;
+  --line:#2E3A45; --diat:#56B8B4; --stress:#E0A94A; --episode:#E3798B; --cell:#24303A; --ok:#7CC58A;
+}
+.dte *{box-sizing:border-box}
+.dte .wrap{max-width:1040px;margin:0 auto;padding:40px 20px 56px}
+.dte h1,.dte h2,.dte h3{font-family:"Newsreader",Georgia,"Times New Roman",serif;font-weight:600;line-height:1.15;margin:0}
+.dte h1{font-size:clamp(2rem,4.5vw,3rem);max-width:22ch}
+.dte h2{font-size:1.6rem;margin-bottom:.4rem}
+.dte h3{font-size:1.2rem}
+.dte p{margin:.5rem 0;max-width:68ch}
+.dte ul{margin:.3rem 0;padding-left:1.2rem}
+.dte li{margin:.3rem 0}
+.dte .lead{font-size:1.1rem;color:var(--muted);margin-top:.8rem}
+.dte section{margin-top:48px}
+.dte .panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px}
+.dte .note{font-size:.85rem;color:var(--muted);margin-top:14px}
+.dte :focus-visible{outline:3px solid var(--diat);outline-offset:2px}
+.dte button{font:inherit;font-size:.9rem;font-weight:600;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:8px 12px;cursor:pointer}
+.dte button:hover{border-color:var(--ink)}
+.dte button:disabled{opacity:.5;cursor:not-allowed;border-color:var(--line)}
+.dte button.primary{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.dte svg text{font-family:"Public Sans",system-ui,sans-serif}
+.dte .step-label{font-size:.9rem;font-weight:600;color:var(--muted);margin:0 0 8px}
+
+/* Parte A: mesmo evento, três pessoas */
+.dte .events{display:flex;gap:8px;flex-wrap:wrap}
+.dte .events button[aria-pressed="true"]{background:var(--stress);border-color:var(--stress);color:#fff}
+.dte .events button .done{font-weight:500;opacity:.8}
+.dte .event-desc{margin:16px 0 4px;font-size:1.05rem}
+.dte .event-desc strong{font-family:"Newsreader",Georgia,serif;font-size:1.25rem;font-weight:600}
+.dte .people{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:14px}
+@media (max-width:760px){.dte .people{grid-template-columns:1fr}}
+.dte .person{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--surface);display:flex;flex-direction:column;gap:8px}
+.dte .person h3{font-size:1.15rem}
+.dte .person .belief{font-size:.88rem;color:var(--muted);font-style:italic;min-height:3.2em}
+.dte .predict{display:flex;gap:8px;align-items:center;font-size:.9rem;border:1px dashed var(--line);border-radius:8px;padding:8px 10px;cursor:pointer}
+.dte .predict input{accent-color:var(--diat);width:18px;height:18px}
+.dte .result[hidden]{display:none}
+.dte .result .thought{font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:1.05rem;line-height:1.35}
+.dte .result .emo{font-size:.85rem;color:var(--muted)}
+.dte .badge{display:inline-block;font-size:.8rem;font-weight:600;border-radius:12px;padding:2px 10px;border:1.5px solid}
+.dte .badge.act{color:var(--episode);border-color:var(--episode)}
+.dte .badge.dist{color:var(--stress);border-color:var(--stress)}
+.dte .badge.low{color:var(--muted);border-color:var(--line)}
+.dte .impact{height:8px;background:var(--cell);border-radius:4px;overflow:hidden}
+.dte .impact i{display:block;height:100%;border-radius:4px}
+.dte .hitmark{font-size:.82rem;font-weight:600}
+.dte .hitmark.y{color:var(--ok)} .dte .hitmark.n{color:var(--episode)}
+.dte .reveal-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.dte .feedback{margin-top:14px;padding:12px 14px;border-left:4px solid var(--diat);background:var(--paper);border-radius:6px;font-size:.95rem}
+.dte .feedback[hidden],.dte .synth[hidden]{display:none}
+.dte .synth{margin-top:18px;border:2px solid var(--diat);border-radius:12px;padding:16px}
+.dte .synth h3{font-size:1.1rem;margin-bottom:6px}
+.dte .synth ol{margin:.3rem 0;padding-left:1.3rem}
+.dte .progress{font-size:.85rem;color:var(--muted);margin-left:auto}
+
+/* Parte B: trajetória */
+.dte .chart-wrap{overflow-x:auto}
+.dte #dte-chart{min-width:620px;width:100%;height:auto;display:block}
+.dte .ctl-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
+@media (max-width:760px){.dte .ctl-grid{grid-template-columns:1fr}}
+.dte .iv{border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:4px;cursor:pointer}
+.dte .iv:has(input:checked){border-color:var(--diat);box-shadow:inset 0 0 0 1px var(--diat)}
+.dte .iv .top{display:flex;gap:8px;align-items:center;font-weight:600;font-size:.95rem}
+.dte .iv input{accent-color:var(--diat);width:18px;height:18px}
+.dte .iv .what{font-size:.85rem;color:var(--muted)}
+.dte .iv a{font-size:.82rem;color:var(--diat);font-weight:600}
+.dte .predict-b{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:.93rem}
+.dte .predict-b label{display:flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer}
+.dte .metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:16px}
+@media (max-width:560px){.dte .metrics{grid-template-columns:1fr}}
+.dte .metric{background:var(--paper);border-radius:10px;padding:10px 12px;font-size:.85rem;color:var(--muted)}
+.dte .metric b{display:block;font-size:1.05rem;color:var(--ink);font-variant-numeric:tabular-nums}
+.dte .evlist{list-style:none;padding:0;margin:12px 0 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:4px 16px;font-size:.85rem;color:var(--muted)}
+.dte .evlist li{margin:0}
+.dte .evlist b{color:var(--ink)}
+.dte .keyrow{display:flex;gap:16px;flex-wrap:wrap;font-size:.85rem;color:var(--muted);margin-top:8px}
+.dte .keyrow span{display:flex;gap:6px;align-items:center}
+.dte .sw{width:22px;height:0;border-top:2px solid;display:inline-block}
+/* Diagrama */
+.dte .scroll{overflow-x:auto}
+.dte .flow{min-width:760px;width:100%;height:auto;display:block}
+.dte .node rect{fill:var(--surface);stroke:var(--line);stroke-width:1.5;transition:stroke-width .15s}
+.dte .node.n-diat rect{stroke:var(--diat);stroke-width:2}
+.dte .node.n-stress rect{stroke:var(--stress);stroke-width:2}
+.dte .node.n-ep rect{stroke:var(--episode);stroke-width:2}
+.dte .hit{cursor:pointer}
+.dte .hit:hover rect,.dte .hit:focus rect{stroke-width:3.5}
+.dte .hit.active rect{stroke:var(--ink);stroke-width:3}
+.dte .hit:focus{outline:none}
+.dte .t-main{fill:var(--ink);font-size:16px;font-weight:600}
+.dte .t-sub{fill:var(--muted);font-size:13px}
+.dte .t-num{fill:var(--muted);font-size:12px;font-weight:600}
+.dte .arrow{fill:none;stroke:var(--muted);stroke-width:1.8}
+.dte .fb{fill:none;stroke:var(--episode);stroke-width:1.6;stroke-dasharray:6 5}
+.dte .t-fb{fill:var(--episode);font-size:13px;font-weight:500}
+.dte .pill rect{fill:var(--surface);stroke:var(--diat);stroke-width:1.3;stroke-dasharray:4 3}
+.dte .pill text{fill:var(--diat);font-size:12.5px;font-weight:500}
+.dte .xcirc{fill:var(--surface);stroke:var(--ink);stroke-width:2}
+.dte .xtext{fill:var(--ink);font-size:22px;font-weight:600}
+.dte .legend{display:flex;gap:18px;flex-wrap:wrap;font-size:.85rem;color:var(--muted);margin-top:12px}
+.dte .legend span{display:flex;align-items:center;gap:6px}
+.dte .sw{width:22px;height:0;border-top:2px solid}
+
+/* Manejo clínico */
+.dte .order{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 10px;font-size:.9rem}
+.dte .order button[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.dte .order-note{font-size:.88rem;color:var(--muted);margin:0 0 14px}
+.dte .tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:0}
+.dte .tab{border:1px solid var(--line);border-bottom:none;border-radius:10px 10px 0 0;background:var(--paper);padding:10px 14px;font-weight:600;font-size:.92rem;color:var(--muted);margin-bottom:-1px;display:flex;gap:8px;align-items:baseline}
+.dte .tab .n{font-variant-numeric:tabular-nums;font-size:.8rem}
+.dte .tab[aria-selected="true"]{background:var(--surface);color:var(--ink);border-color:var(--line);box-shadow:inset 0 3px 0 var(--tabc,var(--ink))}
+.dte .tabpanel{background:var(--surface);border:1px solid var(--line);border-top:none;border-radius:0 0 14px 14px;padding:24px}
+.dte .tabpanel[hidden]{display:none}
+.dte .aim{font-size:1.05rem;max-width:75ch;margin-top:0}
+.dte .clin{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:28px;margin-top:18px}
+@media (max-width:760px){.dte .clin{grid-template-columns:1fr}}
+.dte .qbox{background:var(--paper);border-radius:12px;padding:18px}
+.dte .qbox h4,.dte .blk h4{font-size:.95rem;margin:0 0 6px;font-weight:600}
+.dte .qlist{list-style:none;padding:0;margin:0}
+.dte .qlist li{font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:1.08rem;line-height:1.4;padding:8px 0 8px 14px;border-left:3px solid var(--diat);margin:8px 0}
+.dte .qlist li small{display:block;font-family:"Public Sans",system-ui,sans-serif;font-style:normal;font-size:.8rem;color:var(--muted);margin-top:2px}
+.dte .blk{margin-bottom:16px}
+.dte .blk li{font-size:.95rem}
+.dte .blk li b{font-weight:600}
+.dte .example{margin-top:20px;border-top:1px solid var(--line);padding-top:16px}
+.dte .example h4{font-size:.95rem;margin:0 0 6px}
+.dte .caution{margin-top:16px;padding:12px 14px;border-left:4px solid var(--stress);background:var(--paper);border-radius:6px;font-size:.92rem}
+.dte .caution strong{display:block;margin-bottom:2px}
+
+/* Seta descendente */
+.dte .arrowdown{list-style:none;margin:10px 0 0;padding:0}
+.dte .arrowdown li{position:relative;padding:10px 0 10px 28px;margin:0}
+.dte .arrowdown li::before{content:"";position:absolute;left:8px;top:0;bottom:0;border-left:2px solid var(--line)}
+.dte .arrowdown li::after{content:"";position:absolute;left:3px;top:16px;width:12px;height:12px;border-radius:50%;background:var(--surface);border:2px solid var(--diat)}
+.dte .arrowdown li.core::after{background:var(--diat)}
+.dte .arrowdown .tq{font-size:.88rem;color:var(--muted)}
+.dte .arrowdown .pa{font-weight:600}
+.dte .arrowdown .tag{display:inline-block;font-size:.78rem;font-weight:600;color:var(--diat);border:1px solid var(--diat);border-radius:10px;padding:0 8px;margin-left:6px}
+.dte .arrowdown li[hidden]{display:none}
+.dte .stepctl{display:flex;gap:8px;margin-top:8px}
+.dte .rule{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+@media (max-width:560px){.dte .rule{grid-template-columns:1fr}}
+.dte .rule div{border:1px solid var(--line);border-radius:10px;padding:12px;font-size:.93rem}
+.dte .rule .old{border-color:var(--episode)}
+.dte .rule .new{border-color:var(--diat)}
+.dte .rule span{display:block;font-size:.8rem;color:var(--muted);margin-bottom:4px}
+
+/* Registro de pensamentos */
+.dte .tbl-wrap{overflow-x:auto}
+.dte table{border-collapse:collapse;width:100%;min-width:640px;font-size:.88rem}
+.dte th,.dte td{text-align:left;vertical-align:top;border-bottom:1px solid var(--line);padding:8px}
+.dte th{font-weight:600;color:var(--muted)}
+
+/* Casos e limites */
+.dte .cases{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.dte .case{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column}
+.dte .case h3{margin-bottom:6px}
+.dte .case p{font-size:.93rem}
+.dte .case blockquote{margin:6px 0;padding-left:10px;border-left:3px solid var(--diat);font-size:.93rem;font-style:italic}
+.dte .case button{margin-top:auto;align-self:flex-start}
+.dte details{margin:10px 0;font-size:.92rem}
+.dte summary{cursor:pointer;font-weight:600}
+.dte .limits{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+.dte .limits h3{font-size:1rem;font-family:"Public Sans",system-ui,sans-serif;margin:0 0 4px}
+.dte .limits p{font-size:.93rem;color:var(--muted)}
+.dte footer{margin-top:48px;font-size:.8rem;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+@media (prefers-reduced-motion: reduce){.dte *{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="dte" id="dte-root">
+<div class="wrap">
+
+<header>
+  <h1>Diátese e estresse nas crenças desadaptativas</h1>
+  <p class="lead">Na formulação cognitiva de Beck, crenças disfuncionais formadas cedo podem permanecer inativas por anos. Um evento congruente com o conteúdo da crença pode ativá-la, e o risco de episódio depende da combinação dos dois fatores. Primeiro você testa essa ideia em três pessoas, depois acompanha um ano de uma delas e, por fim, vê como cada dimensão é trabalhada na TCC.</p>
+</header>
+
+<!-- 1. MESMO EVENTO, TRÊS PESSOAS -->
+<section aria-labelledby="dte-h-a">
+  <h2 id="dte-h-a">Mesmo evento, três pessoas</h2>
+  <p>Marina, Paulo e Lia passam pelos mesmos acontecimentos. Escolha um evento, marque em quem você prevê que a crença desadaptativa será ativada e só então revele o que cada um pensou.</p>
+  <div class="panel">
+    <p class="step-label">1. Escolha um evento</p>
+    <div class="events" id="dte-events" role="group" aria-label="Eventos"></div>
+    <p class="event-desc" id="dte-event-desc"></p>
+
+    <p class="step-label" style="margin-top:14px">2. Preveja em quem a crença será ativada</p>
+    <div class="people" id="dte-people"></div>
+    <div class="reveal-row">
+      <button type="button" class="primary" id="dte-reveal">Revelar</button>
+      <span class="progress" id="dte-progress"></span>
+    </div>
+    <div class="feedback" id="dte-feedback" aria-live="polite" hidden></div>
+
+    <div class="synth" id="dte-synth" hidden>
+      <h3>O que os eventos mostraram</h3>
+      <ol>
+        <li>Um evento pequeno ativou a crença quando tocava exatamente o seu conteúdo e a crença era forte (Marina e a amiga que não responde).</li>
+        <li>Um evento intenso trouxe sofrimento sem ativação quando não tocava o conteúdo da crença (Paulo no término; todos na enchente).</li>
+        <li>A diferença aparece no pensamento: na ativação, o evento vira uma conclusão sobre o próprio valor ou a própria capacidade.</li>
+      </ol>
+      <p class="note">Sofrimento sem ativação não significa ausência de risco. Eventos graves aumentam o risco de depressão também por outras vias, que este modelo não representa.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 2. DIAGRAMA -->
+<section aria-labelledby="dte-h-flow">
+  <h2 id="dte-h-flow">A sequência e seus retornos</h2>
+  <p>Clique em uma etapa ou em um ponto de intervenção para abrir o manejo clínico correspondente.</p>
+  <div class="panel scroll">
+    <svg class="flow" viewBox="0 0 960 380" role="group" aria-label="Diagrama do modelo diátese-estresse com etapas clicáveis">
+      <defs>
+        <marker id="dte-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker>
+        <marker id="dte-ahr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--episode)"/></marker>
+      </defs>
+      <path class="fb" d="M870 128 C870 30, 560 30, 536 138" marker-end="url(#dte-ahr)"/>
+      <text class="t-fb" x="640" y="44">Sensibilização: limiar menor</text>
+      <path class="fb" d="M870 212 C870 360, 360 370, 350 312" marker-end="url(#dte-ahr)"/>
+      <text class="t-fb" x="520" y="360">Geração de estresse: novos eventos dependentes</text>
+
+      <path class="arrow" d="M200 86 L246 86" marker-end="url(#dte-ah)"/>
+      <path class="arrow" d="M450 86 C495 86, 510 120, 516 150" marker-end="url(#dte-ah)"/>
+      <path class="arrow" d="M450 276 C495 276, 510 232, 516 202" marker-end="url(#dte-ah)"/>
+      <path class="arrow" d="M556 176 L596 176" marker-end="url(#dte-ah)"/>
+      <path class="arrow" d="M775 176 L801 176" marker-end="url(#dte-ah)"/>
+
+      <g class="node hit" data-tab="hist" tabindex="0" role="button" aria-label="Abrir manejo clínico: experiências precoces"><rect x="20" y="50" width="180" height="72" rx="10"/>
+        <text class="t-num" x="184" y="68" text-anchor="end">1</text>
+        <text class="t-main" x="36" y="80">Experiências precoces</text>
+        <text class="t-sub" x="36" y="102">apego, práticas parentais</text></g>
+      <g class="node n-diat hit" data-tab="belief" tabindex="0" role="button" aria-label="Abrir manejo clínico: crença latente"><rect x="250" y="50" width="200" height="72" rx="10"/>
+        <text class="t-num" x="434" y="68" text-anchor="end">2</text>
+        <text class="t-main" x="266" y="80">Crença latente</text>
+        <text class="t-sub" x="266" y="102">pressupostos condicionais</text></g>
+      <g class="node n-stress hit" data-tab="event" tabindex="0" role="button" aria-label="Abrir manejo clínico: evento estressor"><rect x="250" y="240" width="200" height="72" rx="10"/>
+        <text class="t-num" x="434" y="258" text-anchor="end">3</text>
+        <text class="t-main" x="266" y="270">Evento estressor</text>
+        <text class="t-sub" x="266" y="292">congruente com a crença</text></g>
+      <circle class="xcirc" cx="530" cy="176" r="26"/>
+      <text class="xtext" x="530" y="184" text-anchor="middle">×</text>
+      <g class="node hit" data-tab="act" tabindex="0" role="button" aria-label="Abrir manejo clínico: ativação"><rect x="600" y="140" width="175" height="72" rx="10"/>
+        <text class="t-num" x="759" y="158" text-anchor="end">4</text>
+        <text class="t-main" x="616" y="170">Ativação</text>
+        <text class="t-sub" x="616" y="192">pensamentos automáticos</text></g>
+      <g class="node n-ep hit" data-tab="relapse" tabindex="0" role="button" aria-label="Abrir manejo clínico: episódio e prevenção de recaída"><rect x="805" y="128" width="135" height="84" rx="10"/>
+        <text class="t-num" x="924" y="146" text-anchor="end">5</text>
+        <text class="t-main" x="821" y="164">Episódio</text>
+        <text class="t-sub" x="821" y="186">depressivo</text>
+        <text class="t-sub" x="821" y="202">ou ansioso</text></g>
+
+      <g class="pill hit" data-tab="belief" tabindex="0" role="button" aria-label="Abrir manejo clínico: reestruturação da crença"><rect x="250" y="132" width="190" height="26" rx="13"/><text x="264" y="150">TCC: reestruturação da crença</text></g>
+      <g class="pill hit" data-tab="relapse" tabindex="0" role="button" aria-label="Abrir manejo clínico: prevenção de recaída"><rect x="250" y="204" width="180" height="26" rx="13"/><text x="264" y="222">Prevenção de recaída</text></g>
+      <g class="pill hit" data-tab="act" tabindex="0" role="button" aria-label="Abrir manejo clínico: reatividade cognitiva"><rect x="600" y="222" width="190" height="26" rx="13"/><text x="614" y="240">MBCT: reatividade cognitiva</text></g>
+    </svg>
+    <div class="legend">
+      <span><i class="sw" style="border-color:var(--diat)"></i>Diátese</span>
+      <span><i class="sw" style="border-color:var(--stress)"></i>Estresse</span>
+      <span><i class="sw" style="border-color:var(--episode);border-top-style:dashed"></i>Retornos do episódio</span>
+      <span><i class="sw" style="border-color:var(--diat);border-top-style:dashed"></i>Pontos de intervenção</span>
+    </div>
+  </div>
+</section>
+
+<!-- 3. TRAJETÓRIA -->
+<section aria-labelledby="dte-h-b">
+  <h2 id="dte-h-b">Um ano de Marina, com e sem intervenção</h2>
+  <p>Os mesmos cinco eventos acontecem ao longo de 52 semanas. Rode primeiro o ano sem intervenção e observe dois processos: os conflitos que o comportamento dela passa a gerar e a queda maior diante de um evento pequeno depois do primeiro episódio. Em seguida, marque intervenções, registre sua previsão e compare.</p>
+  <div class="panel">
+    <div class="chart-wrap">
+      <svg id="dte-chart" viewBox="0 0 720 320" role="img" aria-label="Gráfico de humor semanal de Marina ao longo de um ano"></svg>
+    </div>
+    <div class="keyrow">
+      <span><i class="sw" style="border-color:var(--muted)"></i>Sem intervenção</span>
+      <span><i class="sw" style="border-color:var(--diat);border-top-width:3px"></i>Com as intervenções marcadas</span>
+      <span><svg width="14" height="14" aria-hidden="true"><path d="M7 2 L12 11 L2 11 z" style="fill:var(--stress)"/></svg>Evento externo</span>
+      <span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4.5" style="fill:var(--surface);stroke:var(--episode);stroke-width:2"/></svg>Conflito gerado pelo comportamento dela</span>
+    </div>
+    <ul class="evlist" id="dte-evlist"></ul>
+
+    <p class="step-label" style="margin-top:20px">Intervenções (cada uma atua em um ponto diferente do mecanismo)</p>
+    <div class="ctl-grid">
+      <label class="iv">
+        <span class="top"><input type="checkbox" id="dte-iv-restr"> Reestruturação da regra</span>
+        <span class="what">Atua na diátese: a regra "se alguém se afasta, não tenho valor" perde força.</span>
+        <a href="#dte-clinica" data-tab="belief">Ver manejo clínico</a>
+      </label>
+      <label class="iv">
+        <span class="top"><input type="checkbox" id="dte-iv-comm"> Comunicar a insegurança</span>
+        <span class="what">Atua na geração de estresse: pedir apoio sem a busca repetida de confirmação.</span>
+        <a href="#dte-clinica" data-tab="event">Ver manejo clínico</a>
+      </label>
+      <label class="iv">
+        <span class="top"><input type="checkbox" id="dte-iv-plan"> Plano de prevenção de recaída</span>
+        <span class="what">Atua na recuperação: sinais iniciais são reconhecidos e o plano entra em ação.</span>
+        <a href="#dte-clinica" data-tab="relapse">Ver manejo clínico</a>
+      </label>
+    </div>
+
+    <div class="predict-b" role="radiogroup" aria-labelledby="dte-pred-label" id="dte-predict-b">
+      <span id="dte-pred-label"><b>Sua previsão:</b> com essas intervenções, o número de episódios no ano será</span>
+      <label><input type="radio" name="dte-pb" value="same"> igual</label>
+      <label><input type="radio" name="dte-pb" value="fewer"> menor, mas não zero</label>
+      <label><input type="radio" name="dte-pb" value="zero"> zero</label>
+    </div>
+    <div class="reveal-row">
+      <button type="button" class="primary" id="dte-run">Rodar o ano sem intervenção</button>
+      <button type="button" id="dte-clear">Limpar</button>
+    </div>
+
+    <div class="metrics" id="dte-metrics" hidden></div>
+    <div class="feedback" id="dte-bfeed" aria-live="polite" hidden></div>
+    <p class="note">Simulação com parâmetros ilustrativos. Ela serve para ver em que ponto do mecanismo cada intervenção atua. O tamanho relativo dos efeitos resulta das escolhas do modelo e não de dados de ensaios clínicos; a própria hipótese de que a TCC age mudando crenças tem apoio parcial.</p>
+  </div>
+</section>
+
+<!-- 3. MANEJO CLÍNICO -->
+<section aria-labelledby="dte-h-clin" id="dte-clinica">
+  <h2 id="dte-h-clin">Do modelo à clínica</h2>
+  <p>Cada dimensão do modelo pede perguntas, procedimentos de identificação e formas de trabalho diferentes. O caso de Marina, o mesmo das seções anteriores, acompanha as cinco abas.</p>
+
+  <div class="order" role="group" aria-label="Ordem das abas">
+    <span>Ordenar por:</span>
+    <button type="button" data-order="model" aria-pressed="true">Sequência do modelo</button>
+    <button type="button" data-order="therapy" aria-pressed="false">Ordem usual na terapia</button>
+  </div>
+  <p class="order-note" id="dte-order-note">As abas seguem a ordem causal proposta pelo modelo.</p>
+
+  <div class="tabs" role="tablist" aria-label="Dimensões do modelo">
+    <button class="tab" role="tab" id="dte-tab-hist" aria-controls="dte-p-hist" aria-selected="false" tabindex="-1" data-key="hist" style="--tabc:var(--muted)"><span class="n">1</span>Experiências precoces</button>
+    <button class="tab" role="tab" id="dte-tab-belief" aria-controls="dte-p-belief" aria-selected="true" tabindex="0" data-key="belief" style="--tabc:var(--diat)"><span class="n">2</span>Crença latente</button>
+    <button class="tab" role="tab" id="dte-tab-event" aria-controls="dte-p-event" aria-selected="false" tabindex="-1" data-key="event" style="--tabc:var(--stress)"><span class="n">3</span>Evento estressor</button>
+    <button class="tab" role="tab" id="dte-tab-act" aria-controls="dte-p-act" aria-selected="false" tabindex="-1" data-key="act" style="--tabc:var(--ink)"><span class="n">4</span>Ativação</button>
+    <button class="tab" role="tab" id="dte-tab-relapse" aria-controls="dte-p-relapse" aria-selected="false" tabindex="-1" data-key="relapse" style="--tabc:var(--episode)"><span class="n">5</span>Episódio e recaída</button>
+  </div>
+
+  <!-- 1 Experiências precoces -->
+  <div class="tabpanel" role="tabpanel" id="dte-p-hist" aria-labelledby="dte-tab-hist" hidden>
+    <p class="aim">Entender como a crença se formou e que função ela cumpria, para que o paciente consiga examiná-la como algo aprendido em um contexto específico.</p>
+    <div class="clin">
+      <div class="qbox">
+        <h4>Perguntas-chave</h4>
+        <ul class="qlist">
+          <li>"Quando você se lembra de ter se sentido assim pela primeira vez?"</li>
+          <li>"Que mensagens sobre você circulavam na sua família ou na escola?"</li>
+          <li>"Naquela época, pensar desse jeito ajudava você a lidar com o quê?"</li>
+          <li>"Quem, na sua história, tratava você de outro jeito?"<small>Busca experiências que não confirmam a crença.</small></li>
+        </ul>
+      </div>
+      <div>
+        <div class="blk"><h4>Como identificar</h4>
+          <ul>
+            <li><b>Linha do tempo</b> de experiências ligadas ao tema da crença (perdas, críticas, rejeições).</li>
+            <li><b>Padrões na história de relações</b>, como papéis que se repetem com figuras diferentes.</li>
+            <li><b>Questionários de esquemas</b> (como o de Young) para nomear temas, sempre em diálogo com a entrevista.</li>
+          </ul></div>
+        <div class="blk"><h4>Como trabalhar</h4>
+          <ul>
+            <li><b>Teste histórico da crença:</b> revisar períodos da vida buscando dados a favor e contra, e reinterpretar os dados a favor com o olhar adulto.</li>
+            <li><b>Função original da regra:</b> reconhecer que ela protegia em um contexto e avaliar se ainda serve no contexto atual.</li>
+            <li><b>Reescrita de imagens</b> de memórias associadas, quando indicada e com formação específica.</li>
+          </ul></div>
+      </div>
+    </div>
+    <div class="example"><h4>Com Marina</h4>
+      <p>O pai saía de casa por dias depois de brigas, sem explicação. Ela aprendeu a vigiar sinais de afastamento e a se esforçar para agradar. Na formulação, isso ajuda a entender por que atrasos em mensagens pesam tanto para ela.</p></div>
+    <div class="caution"><strong>Cuidado clínico</strong>A ligação entre experiências precoces e crenças se apoia sobretudo em dados retrospectivos. Use a história para construir a formulação com o paciente, sem apresentá-la como explicação causal comprovada. Evite aprofundar memórias traumáticas antes de haver estabilização e aliança.</div>
+  </div>
+
+  <!-- 2 Crença latente -->
+  <div class="tabpanel" role="tabpanel" id="dte-p-belief" aria-labelledby="dte-tab-belief">
+    <p class="aim">Tornar explícita a regra condicional que conecta situações diferentes e a crença central que essa regra protege, para então testá-las.</p>
+    <div class="clin">
+      <div class="qbox">
+        <h4>Perguntas-chave</h4>
+        <ul class="qlist">
+          <li>"Se esse pensamento fosse verdade, o que significaria sobre você?"</li>
+          <li>"E se isso acontecesse, o que seria o pior?"</li>
+          <li>"Que regra você parece seguir para evitar que isso aconteça?"</li>
+          <li>"Complete: se eu ______, então ______."<small>Formato do pressuposto condicional.</small></li>
+          <li>"Em que outras situações essa mesma ideia aparece?"</li>
+        </ul>
+      </div>
+      <div>
+        <div class="blk"><h4>Como identificar</h4>
+          <ul>
+            <li><b>Seta descendente</b> a partir de um pensamento automático com carga emocional (exemplo abaixo).</li>
+            <li><b>Temas repetidos</b> em vários registros de pensamento.</li>
+            <li><b>Regras formuladas com</b> "tenho que", "devo" ou "se... então".</li>
+            <li><b>Escalas</b> como a Dysfunctional Attitude Scale, como apoio. Fora de crise a crença pode não aparecer; explore situações recentes em que o humor mudou.</li>
+          </ul></div>
+        <div class="blk"><h4>Como trabalhar</h4>
+          <ul>
+            <li><b>Questionamento socrático da regra:</b> de onde veio, quais vantagens e custos tem, se valeria para uma amiga.</li>
+            <li><b>Reformulação da regra</b> em versão mais flexível, construída com o paciente.</li>
+            <li><b>Experimentos comportamentais</b> que testam a previsão da regra na prática.</li>
+            <li><b>Continuum</b> para crenças dicotômicas ("sem valor"), situando pessoas e a si mesmo numa escala.</li>
+            <li><b>Registro de dados positivos</b> ao longo de semanas, para sustentar a crença alternativa.</li>
+          </ul></div>
+      </div>
+    </div>
+
+    <div class="example"><h4>Com Marina: seta descendente</h4>
+      <ol class="arrowdown" id="dte-arrow">
+        <li><span class="tq">Situação: o namorado demora a responder uma mensagem.</span><br><span class="pa">"Ele está perdendo o interesse."</span><span class="tag">pensamento automático</span></li>
+        <li hidden><span class="tq">"Se ele estiver perdendo o interesse, o que isso significaria?"</span><br><span class="pa">"Que vai me deixar, como os outros."</span></li>
+        <li hidden><span class="tq">"E se ele deixar, o que isso diria sobre você?"</span><br><span class="pa">"Que as pessoas se afastam de mim porque tem algo errado comigo."</span><span class="tag">pressuposto</span></li>
+        <li hidden class="core"><span class="tq">"E o que seria o pior nisso?"</span><br><span class="pa">"Que eu não tenho valor."</span><span class="tag">crença central</span></li>
+      </ol>
+      <div class="stepctl">
+        <button type="button" id="dte-next">Próxima pergunta</button>
+        <button type="button" id="dte-reset">Recomeçar</button>
+      </div>
+      <div class="rule" id="dte-rule" hidden>
+        <div class="old"><span>Regra original (convicção 90)</span>"Se alguém se afasta de mim, é porque não tenho valor."</div>
+        <div class="new"><span>Versão construída com a paciente (convicção inicial 40)</span>"Quando alguém se afasta, posso sofrer e, antes de concluir algo sobre mim, considerar outras explicações."</div>
+      </div>
+    </div>
+    <div class="caution"><strong>Cuidado clínico</strong>Reformulações escritas só pelo terapeuta podem soar como slogan. A versão alternativa precisa sair do diálogo e ser testada em experimentos. Crenças centrais costumam mudar devagar; acompanhe o grau de convicção (0 a 100) ao longo das sessões.</div>
+  </div>
+
+  <!-- 3 Evento -->
+  <div class="tabpanel" role="tabpanel" id="dte-p-event" aria-labelledby="dte-tab-event" hidden>
+    <p class="aim">Mapear quais situações tocam o conteúdo da crença, distinguir eventos independentes daqueles em que o comportamento do paciente participa, e antecipar situações de risco.</p>
+    <div class="clin">
+      <div class="qbox">
+        <h4>Perguntas-chave</h4>
+        <ul class="qlist">
+          <li>"O que aconteceu pouco antes de o humor mudar?"</li>
+          <li>"O que nessa situação mexeu com algo sensível para você?"</li>
+          <li>"Por que isso pesou mais do que outras situações parecidas?"<small>Explora a congruência entre evento e crença.</small></li>
+          <li>"Como a situação foi se desenrolando? O que cada pessoa fez?"<small>Investiga eventos dependentes sem atribuir culpa.</small></li>
+          <li>"Que situações dos próximos meses podem tocar nesse mesmo ponto?"</li>
+        </ul>
+      </div>
+      <div>
+        <div class="blk"><h4>Como identificar</h4>
+          <ul>
+            <li><b>Diário de humor com situações</b>, verificando se as quedas se concentram em um domínio (interpessoal, desempenho).</li>
+            <li><b>Análise em cadeia</b> dos eventos, para ver em que ponto o comportamento do paciente contribuiu para o desfecho.</li>
+            <li><b>Linha do tempo dos episódios</b> com seus precipitantes.</li>
+          </ul></div>
+        <div class="blk"><h4>Como trabalhar</h4>
+          <ul>
+            <li><b>Resolução de problemas</b> para estressores que podem ser modificados.</li>
+            <li><b>Habilidades interpessoais</b> quando há eventos dependentes, como busca excessiva de reasseguramento.</li>
+            <li><b>Plano de enfrentamento</b> para situações de alto risco já previstas.</li>
+            <li><b>Exposição gradual</b> a situações evitadas, quando a evitação impede que a crença seja testada.</li>
+          </ul></div>
+      </div>
+    </div>
+    <div class="example"><h4>Com Marina</h4>
+      <p>As quedas de humor se concentram em sinais de distância. Quando se sente insegura, ela manda muitas mensagens pedindo confirmação; o namorado se irrita, e a irritação vira nova evidência de afastamento. O ciclo mostra a geração de estresse na prática e indica um alvo: comunicar a insegurança de outro modo.</p></div>
+    <div class="caution"><strong>Cuidado clínico</strong>Examinar a participação do paciente nos eventos exige cuidado para não soar como culpa. Eventos graves e independentes, como luto ou violência, pedem acolhimento e manejo prático antes do trabalho com crenças.</div>
+  </div>
+
+  <!-- 4 Ativação -->
+  <div class="tabpanel" role="tabpanel" id="dte-p-act" aria-labelledby="dte-tab-act" hidden>
+    <p class="aim">Captar o que passa pela mente no momento da ativação, examinar esses pensamentos e mudar a relação com eles, incluindo processos como a ruminação.</p>
+    <div class="clin">
+      <div class="qbox">
+        <h4>Perguntas-chave</h4>
+        <ul class="qlist">
+          <li>"O que passou pela sua cabeça naquele momento?"</li>
+          <li>"Veio alguma imagem ou lembrança?"</li>
+          <li>"Quanto você acreditava nisso, de 0 a 100?"</li>
+          <li>"O que apoia essa ideia? E o que não se encaixa nela?"</li>
+          <li>"Ficar pensando nisso tem ajudado a resolver o problema, ou o pensamento volta sem avançar?"<small>Passa do conteúdo para o processo.</small></li>
+        </ul>
+      </div>
+      <div>
+        <div class="blk"><h4>Como identificar</h4>
+          <ul>
+            <li><b>Registro de pensamentos</b>: situação, pensamento, emoção e intensidade.</li>
+            <li><b>Mudanças de afeto na sessão</b>: "O que passou pela sua cabeça agora?"</li>
+            <li><b>Distorções recorrentes</b>, como leitura mental e catastrofização.</li>
+            <li><b>Processo além do conteúdo</b>: tempo gasto ruminando ou se preocupando.</li>
+          </ul></div>
+        <div class="blk"><h4>Como trabalhar</h4>
+          <ul>
+            <li><b>Exame de evidências</b> e construção de explicações alternativas.</li>
+            <li><b>Descatastrofização</b>: o pior, o melhor e o mais provável.</li>
+            <li><b>Duplo padrão</b>: o que diria a uma amiga na mesma situação.</li>
+            <li><b>Descentração e atenção plena</b> (MBCT), voltadas à reatividade.</li>
+            <li><b>Adiamento da ruminação</b> e trabalho com crenças metacognitivas (Wells).</li>
+          </ul></div>
+      </div>
+    </div>
+    <div class="example"><h4>Com Marina: registro de pensamentos</h4>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Situação</th><th>Pensamento (convicção)</th><th>Emoção</th><th>O que não se encaixa</th><th>Alternativa (convicção)</th><th>Emoção depois</th></tr></thead>
+        <tbody><tr>
+          <td>Namorado responde "depois falo"</td>
+          <td>"Ele cansou de mim" (85)</td>
+          <td>Ansiedade 80, tristeza 70</td>
+          <td>Ele tinha avisado da reunião; ontem me chamou para jantar</td>
+          <td>"Ele está ocupado; ainda não sei o que isso significa" (60)</td>
+          <td>Ansiedade 45</td>
+        </tr></tbody>
+      </table></div>
+    </div>
+    <div class="caution"><strong>Cuidado clínico</strong>Em crise, registrar pensamentos pode ser difícil; comece por situações de intensidade moderada. A reatividade medida após indução de humor é um recurso de pesquisa; na clínica, aproveite as mudanças de humor que já acontecem durante a sessão.</div>
+  </div>
+
+  <!-- 5 Episódio e recaída -->
+  <div class="tabpanel" role="tabpanel" id="dte-p-relapse" aria-labelledby="dte-tab-relapse" hidden>
+    <p class="aim">Reconhecer sinais iniciais, consolidar o que funcionou e preparar o paciente para situações que podem reativar a crença, já que a vulnerabilidade pode persistir após a remissão.</p>
+    <div class="clin">
+      <div class="qbox">
+        <h4>Perguntas-chave</h4>
+        <ul class="qlist">
+          <li>"Quais foram os primeiros sinais da última vez, antes de piorar?"</li>
+          <li>"O que você fez que mais ajudou?"</li>
+          <li>"Se essa crença voltar a ficar forte, como você vai perceber?"</li>
+          <li>"Que situações dos próximos meses pedem um plano?"</li>
+          <li>"Quem pode notar os sinais antes de você?"</li>
+        </ul>
+      </div>
+      <div>
+        <div class="blk"><h4>Como identificar</h4>
+          <ul>
+            <li><b>Linha do tempo dos episódios</b> com os sinais iniciais (sono, isolamento, autocrítica).</li>
+            <li><b>Lista pessoal de sinais de alerta</b>, escrita com as palavras do paciente.</li>
+            <li><b>Tamanho dos precipitantes</b>: em quem teve vários episódios, verificar se eventos menores têm bastado para desencadear piora.</li>
+          </ul></div>
+        <div class="blk"><h4>Como trabalhar</h4>
+          <ul>
+            <li><b>Plano escrito de prevenção de recaída</b>: sinais, ações e contatos.</li>
+            <li><b>Resumo do que foi aprendido</b> na terapia, redigido pelo paciente.</li>
+            <li><b>Espaçamento das sessões</b> e sessões de reforço.</li>
+            <li><b>MBCT</b> para pessoas com três ou mais episódios.</li>
+            <li><b>Ensaio imaginário</b> de situações de risco e das respostas planejadas.</li>
+          </ul></div>
+      </div>
+    </div>
+    <div class="example"><h4>Com Marina</h4>
+      <p>Sinal inicial identificado: checar o celular repetidamente e cancelar encontros com amigas. Plano: ao notar isso, fazer um registro de pensamento, ligar para uma amiga e reler a regra alternativa que ela escreveu.</p></div>
+    <div class="caution"><strong>O que a evidência mostra</strong>A terapia cognitiva mostrou efeito preventivo mais duradouro do que a medicação descontinuada (Hollon et al., 2005). Em meta-análise com dados individuais, a MBCT reduziu o risco de recaída em comparação com quem não a recebeu (Kuyken et al., 2016). O mecanismo desses efeitos ainda não está estabelecido.</div>
+  </div>
+</section>
+
+<!-- 5. LIMITES -->
+<section aria-labelledby="dte-h-lim">
+  <h2 id="dte-h-lim">O que esta figura simplifica</h2>
+  <div class="limits">
+    <div><h3>Independência dos fatores</h3><p>O modelo básico trata crença e evento como independentes. Hammen (1991) mostrou que a vulnerabilidade contribui para produzir eventos dependentes do próprio comportamento.</p></div>
+    <div><h3>Latência da crença</h3><p>Escores de atitudes disfuncionais caem após a remissão. Por isso a diátese passou a ser estudada como reatividade após indução de humor (Segal et al., 2006).</p></div>
+    <div><h3>Mecanismo da mudança</h3><p>A hipótese de que a TCC funciona porque modifica crenças tem apoio parcial. Medidas de crenças também mudam com farmacoterapia, e estudos de mediação têm resultados heterogêneos.</p></div>
+  </div>
+</section>
+
+<footer>
+  Referências de base: Beck (1983); Abramson, Metalsky e Alloy (1989); Alloy et al. (2006); Hammen (1991); Monroe e Simons (1991); Monroe e Harkness (2005); Segal, Gemar e Williams (1999); Segal et al. (2006); Scher, Ingram e Segal (2005); Hollon et al. (2005); Kuyken, Padesky e Dudley (2009); Kuyken et al. (2016); Beck, J. S. (2021), Cognitive behavior therapy: basics and beyond; Padesky (1994); Wells (2009).
+</footer>
+
+</div>
+</div>
+
+<script>
+(function(){
+  var root = document.getElementById("dte-root");
+  if (!root) return;
+  var $ = function(id){ return document.getElementById(id); };
+  var qa = function(sel){ return Array.prototype.slice.call(root.querySelectorAll(sel)); };
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var scrollTo = function(el){ el.scrollIntoView({behavior: reduce ? "auto" : "smooth", block: "start"}); };
+  var svgNS = "http://www.w3.org/2000/svg";
+  function el(name, attrs, style){ var n = document.createElementNS(svgNS, name); for (var k in attrs) n.setAttribute(k, attrs[k]); if (style) for (var s in style) n.style[s] = style[s]; return n; }
+  function postHeight(){
+    if (window.parent && window.parent !== window){
+      try { window.parent.postMessage({type: "dte-height", height: document.documentElement.scrollHeight}, "*"); } catch(e){}
+    }
+  }
+  window.addEventListener("resize", postHeight);
+
+  /* =========== Parte A: mesmo evento, três pessoas =========== */
+  var people = [
+    {id:"marina", name:"Marina", belief:"\u201cSe alguém se afasta de mim, é porque não tenho valor.\u201d"},
+    {id:"paulo", name:"Paulo", belief:"\u201cSe eu falhar, sou um fracasso.\u201d"},
+    {id:"lia", name:"Lia", belief:"Sem regra rígida sobre relações ou desempenho."}
+  ];
+  var KIND = {act:["act","Crença ativada"], dist:["dist","Sofrimento sem ativação"], low:["low","Impacto pequeno"]};
+  var events = [
+    {id:"e1", short:"Amiga não responde", title:"Uma amiga não responde mensagens por dois dias.", tag:"Interpessoal, intensidade baixa",
+     r:{marina:["act",70,"Ela cansou de mim, como todo mundo cansa.","Ansiedade e tristeza que duram o fim de semana"],
+        paulo:["low",10,"Deve estar ocupada.","Quase nenhuma"],
+        lia:["low",15,"Estranho. Depois pergunto se está tudo bem.","Leve estranhamento"]},
+     exp:"Evento pequeno, mas congruente com a crença forte de Marina: bastou para ativá-la. Para Paulo e Lia, o mesmo atraso quase não pesou."},
+    {id:"e2", short:"Término do namoro", title:"O namoro de três anos termina.", tag:"Interpessoal, intensidade alta",
+     r:{marina:["act",90,"Ninguém fica comigo. Tem algo errado em mim.","Tristeza intensa, culpa, vontade de se isolar"],
+        paulo:["dist",65,"Dói muito. Vou sentir falta dela.","Tristeza intensa ligada à perda"],
+        lia:["dist",60,"Vai ser um período difícil.","Tristeza e saudade"]},
+     exp:"Os três sofrem. Só em Marina o término vira uma conclusão sobre o próprio valor. Paulo sente a perda com intensidade, e ela não toca a regra dele, que é sobre desempenho."},
+    {id:"e3", short:"Crítica do chefe", title:"O chefe critica o trabalho diante da equipe.", tag:"Desempenho, intensidade alta",
+     r:{marina:["dist",40,"Foi ruim ouvir isso na frente de todos.","Constrangimento"],
+        paulo:["act",85,"Sou incompetente. Todo mundo viu que não dou conta.","Vergonha, desânimo, vontade de faltar no dia seguinte"],
+        lia:["dist",35,"Foi desagradável. Preciso entender o que ele esperava.","Irritação"]},
+     exp:"Agora o conteúdo congruente é o de Paulo. Marina e Lia ficam incomodadas, e o incômodo fica restrito à situação."},
+    {id:"e4", short:"Nota baixa", title:"Uma nota abaixo do esperado em um curso.", tag:"Desempenho, intensidade baixa",
+     r:{marina:["low",10,"Chato. Vou revisar.","Leve frustração"],
+        paulo:["act",65,"Se nem isso eu consigo, sou um fracasso.","Desânimo e autocrítica que se estendem por dias"],
+        lia:["low",10,"Não fui bem nessa parte.","Leve frustração"]},
+     exp:"Evento pequeno de desempenho: ativa a crença forte de Paulo e passa quase despercebido para as outras duas."},
+    {id:"e5", short:"Enchente em casa", title:"Uma enchente atinge a casa e destrói móveis.", tag:"Independente, intensidade alta",
+     r:{marina:["dist",75,"Perdemos muita coisa. Não sei por onde começar.","Angústia e cansaço"],
+        paulo:["dist",75,"Vai custar caro recomeçar.","Preocupação e cansaço"],
+        lia:["dist",75,"Estou exausta, mas vamos organizar.","Cansaço e tristeza"]},
+     exp:"Estresse intenso, sem conteúdo ligado às crenças de ninguém. Os três sofrem muito, e neste modelo ninguém tem a crença ativada."}
+  ];
+  var current = events[0], revealed = {};
+
+  var evWrap = $("dte-events");
+  events.forEach(function(ev){
+    var b = document.createElement("button");
+    b.type = "button"; b.dataset.id = ev.id; b.setAttribute("aria-pressed", "false");
+    b.innerHTML = ev.short + ' <span class="done" hidden>(visto)</span>';
+    b.addEventListener("click", function(){ current = ev; renderA(); });
+    evWrap.appendChild(b);
+  });
+
+  function renderA(){
+    qa("#dte-events button").forEach(function(b){
+      b.setAttribute("aria-pressed", b.dataset.id === current.id ? "true" : "false");
+      b.querySelector(".done").hidden = !revealed[b.dataset.id];
+    });
+    $("dte-event-desc").innerHTML = "<strong>" + current.title + "</strong><br><span style='font-size:.88rem;color:var(--muted)'>" + current.tag + "</span>";
+    var isRev = !!revealed[current.id], pred = revealed[current.id] || {};
+    var wrap = $("dte-people"); wrap.innerHTML = "";
+    people.forEach(function(p){
+      var r = current.r[p.id], k = KIND[r[0]];
+      var card = document.createElement("div"); card.className = "person";
+      var html = "<h3>" + p.name + "</h3><div class='belief'>" + p.belief + "</div>";
+      html += "<label class='predict'><input type='checkbox' data-p='" + p.id + "'" + (pred[p.id] ? " checked" : "") + (isRev ? " disabled" : "") + "> Prevejo ativação</label>";
+      html += "<div class='result'" + (isRev ? "" : " hidden") + ">";
+      html += "<div class='thought'>\u201c" + r[2] + "\u201d</div>";
+      html += "<div class='emo'>" + r[3] + "</div>";
+      html += "<div><span class='badge " + k[0] + "'>" + k[1] + "</span></div>";
+      var col = r[0] === "act" ? "var(--episode)" : (r[0] === "dist" ? "var(--stress)" : "var(--muted)");
+      html += "<div class='impact' aria-label='Intensidade do sofrimento'><i style='width:" + r[1] + "%;background:" + col + "'></i></div>";
+      if (isRev){
+        var ok = !!pred[p.id] === (r[0] === "act");
+        html += "<div class='hitmark " + (ok ? "y" : "n") + "'>" + (ok ? "Previsão correta" : "Previsão diferente do modelo") + "</div>";
+      }
+      html += "</div>";
+      card.innerHTML = html; wrap.appendChild(card);
+    });
+    $("dte-reveal").disabled = isRev;
+    $("dte-reveal").textContent = isRev ? "Revelado" : "Revelar";
+    var fb = $("dte-feedback");
+    if (isRev){
+      var hits = people.filter(function(p){ return !!pred[p.id] === (current.r[p.id][0] === "act"); }).length;
+      fb.hidden = false;
+      fb.innerHTML = "<strong>" + hits + " de 3 previsões coincidem com o modelo.</strong> " + current.exp;
+    } else fb.hidden = true;
+    var n = Object.keys(revealed).length;
+    $("dte-progress").textContent = n + " de " + events.length + " eventos revelados";
+    $("dte-synth").hidden = n < 3;
+    postHeight();
+  }
+  $("dte-reveal").addEventListener("click", function(){
+    var pred = {};
+    qa("#dte-people input[type=checkbox]").forEach(function(c){ pred[c.dataset.p] = c.checked; });
+    revealed[current.id] = pred;
+    renderA();
+  });
+  renderA();
+
+  /* =========== Parte B: trajetória de um ano =========== */
+  var BEV = [
+    {w:4, size:0.3, type:"inter", n:1, label:"Amiga não responde por dias"},
+    {w:10, size:0.5, type:"desemp", n:2, label:"Crítica do chefe"},
+    {w:16, size:0.8, type:"inter", n:3, label:"Término do namoro"},
+    {w:36, size:0.3, type:"inter", n:4, label:"Amigo cancela encontro em cima da hora"},
+    {w:46, size:0.2, type:"desemp", n:5, label:"Nota baixa em um curso"}
+  ];
+  var TH = -6;
+  function simulate(opt){
+    var belief = opt.restr ? 0.35 : 0.9;
+    var m = 0, sens = 1, inEp = false, eps = 0, epWeeks = 0, low6 = 0, low3 = 0, lastDep = -99;
+    var series = [], epFlags = [], deps = [];
+    for (var w = 0; w <= 52; w++){
+      var hits = BEV.filter(function(e){ return e.w === w; });
+      if (!opt.comm && m < -4 && w - lastDep >= 7){ hits.push({size:0.25, type:"inter"}); lastDep = w; deps.push(w); }
+      hits.forEach(function(e){ m -= 10 * e.size * (e.type === "inter" ? (0.2 + belief) : 0.2) * sens; });
+      low3 = m < -3 ? low3 + 1 : 0;
+      var rec = m > -3 ? 0.3 : 0.3 * (1 - 0.6 * belief);
+      if (opt.plan && low3 >= 2) rec += 0.2;
+      m += rec * (0 - m); if (m < -10) m = -10;
+      if (m < TH){ low6++; if (!inEp && low6 >= 2){ inEp = true; eps++; } } else low6 = 0;
+      if (inEp && m > -3){ inEp = false; sens *= 2; }
+      if (inEp) epWeeks++;
+      series.push(m); epFlags.push(inEp);
+    }
+    return {series:series, epFlags:epFlags, eps:eps, epWeeks:epWeeks, deps:deps};
+  }
+
+  var chart = $("dte-chart");
+  var X0 = 56, X1 = 704, Y0 = 34, Y1 = 280;
+  var xs = function(w){ return X0 + w * (X1 - X0) / 52; };
+  var ys = function(m){ return Y0 + (1 - m) / 11 * (Y1 - Y0); };
+  var base = null, treat = null;
+
+  $("dte-evlist").innerHTML = BEV.map(function(e){ return "<li><b>" + e.n + ".</b> Semana " + e.w + ": " + e.label + "</li>"; }).join("");
+
+  function drawAxes(){
+    while (chart.firstChild) chart.removeChild(chart.firstChild);
+    var g = el("g");
+    [0, -3, -6, -9].forEach(function(v){
+      g.appendChild(el("line", {x1:X0, x2:X1, y1:ys(v), y2:ys(v), "stroke-width":1}, {stroke:"var(--line)"}));
+      var t = el("text", {x:X0 - 8, y:ys(v) + 4, "text-anchor":"end", "font-size":11}, {fill:"var(--muted)"}); t.textContent = v; g.appendChild(t);
+    });
+    g.appendChild(el("line", {x1:X0, x2:X1, y1:ys(TH), y2:ys(TH), "stroke-width":1.5, "stroke-dasharray":"6 4"}, {stroke:"var(--episode)"}));
+    var tl = el("text", {x:X1, y:ys(TH) - 6, "text-anchor":"end", "font-size":11.5}, {fill:"var(--episode)", fontWeight:"600"}); tl.textContent = "limiar de episódio"; g.appendChild(tl);
+    [0, 13, 26, 39, 52].forEach(function(w){
+      var t = el("text", {x:xs(w), y:Y1 + 18, "text-anchor":(w === 52 ? "end" : (w === 0 ? "start" : "middle")), "font-size":11}, {fill:"var(--muted)"}); t.textContent = "sem. " + w; g.appendChild(t);
+    });
+    var ay = el("text", {x:14, y:(Y0 + Y1) / 2, "text-anchor":"middle", "font-size":11.5, transform:"rotate(-90 14 " + ((Y0 + Y1) / 2) + ")"}, {fill:"var(--muted)"});
+    ay.textContent = "humor (0 = habitual)"; g.appendChild(ay);
+    BEV.forEach(function(e){
+      var x = xs(e.w);
+      g.appendChild(el("line", {x1:x, x2:x, y1:24, y2:Y1, "stroke-width":1, "stroke-dasharray":"2 3"}, {stroke:"var(--line)"}));
+      g.appendChild(el("path", {d:"M" + x + " 8 L" + (x + 7) + " 20 L" + (x - 7) + " 20 z"}, {fill:"var(--stress)"}));
+      var t = el("text", {x:x, y:32, "text-anchor":"middle", "font-size":10.5}, {fill:"var(--stress)", fontWeight:"600"}); t.textContent = e.n; g.appendChild(t);
+    });
+    chart.appendChild(g);
+  }
+
+  function drawSeries(res, color, width, animate, shadeColor){
+    var g = el("g");
+    var start = null;
+    res.epFlags.forEach(function(f, w){
+      if (f && start === null) start = w;
+      if ((!f || w === 52) && start !== null){
+        var end = f ? w : w - 1;
+        g.appendChild(el("rect", {x:xs(start) - 4, y:Y0, width:xs(end) - xs(start) + 8, height:Y1 - Y0, "fill-opacity":0.1}, {fill:shadeColor}));
+        start = null;
+      }
+    });
+    var d = res.series.map(function(m, w){ return (w ? "L" : "M") + xs(w).toFixed(1) + " " + ys(m).toFixed(1); }).join(" ");
+    var p = el("path", {d:d, fill:"none", "stroke-width":width, "stroke-linejoin":"round"}, {stroke:color});
+    g.appendChild(p);
+    res.deps.forEach(function(w){
+      g.appendChild(el("circle", {cx:xs(w), cy:ys(res.series[w]), r:5.5, "stroke-width":2}, {fill:"var(--surface)", stroke:"var(--episode)"}));
+    });
+    chart.appendChild(g);
+    if (animate && !reduce && p.getTotalLength){
+      var L = p.getTotalLength();
+      p.style.strokeDasharray = L; p.style.strokeDashoffset = L;
+      p.getBoundingClientRect();
+      p.style.transition = "stroke-dashoffset 1.6s ease-in-out";
+      p.style.strokeDashoffset = 0;
+    }
+  }
+
+  function annotateBase(){
+    var x = xs(36) - 10, y = ys(-8);
+    var t1 = el("text", {x:x, y:y, "text-anchor":"end", "font-size":11}, {fill:"var(--ink)"}); t1.textContent = "evento leve, queda maior";
+    var t2 = el("text", {x:x, y:y + 14, "text-anchor":"end", "font-size":11}, {fill:"var(--muted)"}); t2.textContent = "após o 1º episódio (sensibilização)";
+    chart.appendChild(t1); chart.appendChild(t2);
+  }
+
+  function opts(){ return {restr:$("dte-iv-restr").checked, comm:$("dte-iv-comm").checked, plan:$("dte-iv-plan").checked}; }
+  function anyIv(o){ return o.restr || o.comm || o.plan; }
+  function prediction(){ var r = root.querySelector('input[name="dte-pb"]:checked'); return r ? r.value : null; }
+
+  function refreshButton(){
+    var btn = $("dte-run"), o = opts();
+    if (!base){ btn.textContent = "Rodar o ano sem intervenção"; btn.disabled = false; return; }
+    btn.textContent = "Rodar com as intervenções marcadas";
+    btn.disabled = !anyIv(o) || !prediction();
+    btn.title = !anyIv(o) ? "Marque ao menos uma intervenção" : (!prediction() ? "Registre sua previsão" : "");
+  }
+
+  function redraw(animateTreat){
+    drawAxes();
+    if (base){ drawSeries(base, "var(--muted)", 2, false, "var(--episode)"); annotateBase(); }
+    if (treat) drawSeries(treat, "var(--diat)", 3.2, animateTreat, "var(--diat)");
+  }
+
+  function metricsHTML(){
+    var rows = [["Episódios", "eps"], ["Semanas em episódio", "epWeeks"], ["Conflitos gerados", "deps"]];
+    return rows.map(function(r){
+      var b = r[1] === "deps" ? base.deps.length : base[r[1]];
+      var t = treat ? (r[1] === "deps" ? treat.deps.length : treat[r[1]]) : null;
+      return "<div class='metric'>" + r[0] + "<b>Sem intervenção: " + b + "</b>" + (t !== null ? "<b style='color:var(--diat)'>Com intervenções: " + t + "</b>" : "") + "</div>";
+    }).join("");
+  }
+
+  $("dte-run").addEventListener("click", function(){
+    var fb = $("dte-bfeed");
+    if (!base){
+      base = simulate({});
+      drawAxes(); drawSeries(base, "var(--muted)", 2.4, true, "var(--episode)");
+      setTimeout(annotateBase, reduce ? 0 : 1500);
+      $("dte-metrics").hidden = false; $("dte-metrics").innerHTML = metricsHTML();
+      fb.hidden = false;
+      fb.innerHTML = "<strong>Sem intervenção: " + base.eps + " episódios em um ano.</strong> Na semana " + base.deps[0] +
+        ", logo após o término, Marina passa a mandar mensagens insistentes pedindo confirmação e entra em conflito com amigas; o círculo marca esse evento, que ela ajudou a produzir e que aprofunda a queda. Na semana 36, um cancelamento leve derruba o humor mais do que a crítica do chefe havia derrubado antes. Agora marque uma ou mais intervenções, registre sua previsão e rode de novo.";
+      refreshButton(); postHeight(); return;
+    }
+    var o = opts(), pred = prediction();
+    treat = simulate(o);
+    redraw(true);
+    $("dte-metrics").innerHTML = metricsHTML();
+    var truth = treat.eps === 0 ? "zero" : (treat.eps < base.eps ? "fewer" : "same");
+    var names = {same:"igual", fewer:"menor, mas não zero", zero:"zero"};
+    var parts = [];
+    parts.push("<strong>" + (pred === truth ? "Sua previsão coincide com o modelo" : "O modelo resultou em \u201c" + names[truth] + "\u201d, e você previu \u201c" + names[pred] + "\u201d") + ".</strong>");
+    if (o.restr) parts.push("<b>Reestruturação:</b> com a regra menos rígida, os eventos interpessoais produzem quedas menores e a recuperação é mais rápida, porque a crença alimenta menos o processamento negativo.");
+    if (o.comm) parts.push("<b>Comunicar a insegurança:</b> os conflitos que o comportamento de Marina gerava deixam de acontecer, então a queda depois do término não é aprofundada.");
+    if (o.plan) parts.push("<b>Plano de recaída:</b> a queda inicial ainda acontece; depois de duas semanas de sinais, o plano entra em ação e a recuperação começa mais cedo.");
+    if (!o.restr && treat.eps > 0) parts.push("Repare que, sem mexer na regra, o término ainda cruza o limiar: as outras intervenções atuam depois que a crença já foi ativada.");
+    fb.innerHTML = parts.join("<br>");
+    qa('input[name="dte-pb"]').forEach(function(r){ r.checked = false; });
+    refreshButton(); postHeight();
+  });
+  $("dte-clear").addEventListener("click", function(){
+    base = null; treat = null; drawAxes();
+    $("dte-metrics").hidden = true; $("dte-bfeed").hidden = true;
+    ["dte-iv-restr","dte-iv-comm","dte-iv-plan"].forEach(function(id){ $(id).checked = false; });
+    qa('input[name="dte-pb"]').forEach(function(r){ r.checked = false; });
+    refreshButton(); postHeight();
+  });
+  ["dte-iv-restr","dte-iv-comm","dte-iv-plan"].forEach(function(id){ $(id).addEventListener("change", refreshButton); });
+  qa('input[name="dte-pb"]').forEach(function(r){ r.addEventListener("change", refreshButton); });
+  drawAxes(); refreshButton();
+
+/* ---------- Abas ---------- */
+  var tabs = qa(".tab");
+  function selectTab(key, focus){
+    tabs.forEach(function(t){
+      var on = t.dataset.key === key;
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      t.tabIndex = on ? 0 : -1;
+      $(t.getAttribute("aria-controls")).hidden = !on;
+      if (on && focus) t.focus();
+    });
+    qa(".hit").forEach(function(h){ h.classList.toggle("active", h.classList.contains("node") && h.dataset.tab === key); });
+    postHeight();
+  }
+  tabs.forEach(function(t){
+    t.addEventListener("click", function(){ selectTab(t.dataset.key); });
+    t.addEventListener("keydown", function(ev){
+      if (ev.key !== "ArrowRight" && ev.key !== "ArrowLeft") return;
+      var visual = tabs.slice().sort(function(a, b){ return (+a.style.order || 0) - (+b.style.order || 0); });
+      var i = visual.indexOf(t) + (ev.key === "ArrowRight" ? 1 : -1);
+      i = (i + visual.length) % visual.length;
+      selectTab(visual[i].dataset.key, true);
+      ev.preventDefault();
+    });
+  });
+  qa(".hit").forEach(function(h){
+    var go = function(){ selectTab(h.dataset.tab); scrollTo($("dte-clinica")); };
+    h.addEventListener("click", go);
+    h.addEventListener("keydown", function(ev){ if (ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); go(); } });
+  });
+
+  /* Ordem do modelo x ordem usual na terapia */
+  var orders = {
+    model: {seq: ["hist","belief","event","act","relapse"], note: "As abas seguem a ordem causal proposta pelo modelo."},
+    therapy: {seq: ["event","act","belief","hist","relapse"], note: "Na prática, o trabalho costuma começar por situações atuais e pensamentos automáticos, descer para pressupostos e crenças centrais, incorporar a história conforme a aliança permite e terminar na prevenção de recaída."}
+  };
+  qa(".order button").forEach(function(b){
+    b.addEventListener("click", function(){
+      var o = orders[b.dataset.order];
+      qa(".order button").forEach(function(x){ x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+      tabs.forEach(function(t){ t.style.order = o.seq.indexOf(t.dataset.key); });
+      $("dte-order-note").textContent = o.note;
+      selectTab(o.seq[0]);
+    });
+  });
+
+  /* ---------- Seta descendente ---------- */
+  var steps = qa("#dte-arrow li"), shown = 1;
+  function renderSteps(){
+    steps.forEach(function(li, i){ li.hidden = i >= shown; });
+    $("dte-next").disabled = shown >= steps.length;
+    $("dte-next").textContent = shown >= steps.length ? "Crença central alcançada" : "Próxima pergunta";
+    $("dte-rule").hidden = shown < steps.length;
+    postHeight();
+  }
+  $("dte-next").addEventListener("click", function(){ if (shown < steps.length){ shown++; renderSteps(); } });
+  $("dte-reset").addEventListener("click", function(){ shown = 1; renderSteps(); });
+
+    qa(".iv a[data-tab]").forEach(function(a){
+    a.addEventListener("click", function(ev){ ev.preventDefault(); selectTab(a.dataset.tab); scrollTo($("dte-clinica")); });
+  });
+
+  renderSteps();
+  selectTab("belief");
+  postHeight();
+})();
+</script>
+</body>
+</html>

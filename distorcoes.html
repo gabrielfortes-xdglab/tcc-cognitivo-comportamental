@@ -65,6 +65,14 @@ header.top{
   text-decoration:none;width:fit-content;
 }
 .back-link:hover{color:var(--teal)}
+.see-also{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  background:var(--teal-soft);border:1px solid var(--teal);border-radius:var(--radius);
+  padding:10px 14px;font-size:12.5px;color:var(--ink-soft);
+}
+.see-also strong{color:var(--ink);font-weight:600}
+.see-also a{color:var(--teal);font-weight:600;text-decoration:none}
+.see-also a:hover{text-decoration:underline}
 h1{
   font-family:var(--font-display);
   font-weight:700;font-size:clamp(24px,3vw,32px);
@@ -414,6 +422,11 @@ h1{
       </div>
     </div>
   </header>
+
+  <div class="see-also">
+    <span><strong>Por que a mesma crença nem sempre gera um episódio?</strong> Veja o modelo de diátese e estresse, do mecanismo ao manejo clínico por dimensão.</span>
+    <a href="diatese-estresse.html">Abrir ferramenta →</a>
+  </div>
 
   <div class="toolbar">
     <div class="search">
