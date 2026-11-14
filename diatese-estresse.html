@@ -192,6 +192,14 @@ html,body{margin:0}
 .dte .limits p{font-size:.93rem;color:var(--muted)}
 .dte footer{margin-top:48px;font-size:.8rem;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
 @media (prefers-reduced-motion: reduce){.dte *{transition:none!important}}
+.dte .back-link{display:inline-flex;align-items:center;min-height:44px;font-size:.85rem;font-weight:600;color:var(--muted);text-decoration:none}
+.dte .back-link:hover{color:var(--ink)}
+/* ======= Celular: alvos de toque maiores ======= */
+@media (max-width:640px){
+  .dte button{min-height:44px}
+  .dte a[data-tab]{display:inline-flex;align-items:center;min-height:44px}
+  .dte input[type="radio"],.dte input[type="checkbox"]{width:20px;height:20px}
+}
 </style>
 </head>
 <body>
@@ -199,6 +207,7 @@ html,body{margin:0}
 <div class="wrap">
 
 <header>
+  <a href="index.html" class="back-link">← Menu de ferramentas</a>
   <h1>Diátese e estresse nas crenças desadaptativas</h1>
   <p class="lead">Na formulação cognitiva de Beck, crenças disfuncionais formadas cedo podem permanecer inativas por anos. Um evento congruente com o conteúdo da crença pode ativá-la, e o risco de episódio depende da combinação dos dois fatores. Primeiro você testa essa ideia em três pessoas, depois acompanha um ano de uma delas e, por fim, vê como cada dimensão é trabalhada na TCC.</p>
 </header>
